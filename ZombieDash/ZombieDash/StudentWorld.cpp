@@ -1,6 +1,7 @@
 #include "StudentWorld.h"
 #include "GameConstants.h"
 #include <string>
+#include <list>
 using namespace std;
 
 GameWorld* createStudentWorld(string assetPath)
@@ -29,6 +30,13 @@ int StudentWorld::move() {
 }
 
 void StudentWorld::cleanUp() {
-//    delete m_player;
-//    m_player = nullptr;
+    delete m_player;
+    m_player = nullptr;
+    list<Actor*>::iterator actorsIter = m_actors.begin();
+    while (actorsIter != m_actors.end()) {
+        Actor* temp = *actorsIter;
+        delete temp;
+        temp = nullptr;
+        actorsIter++;
+    }
 }

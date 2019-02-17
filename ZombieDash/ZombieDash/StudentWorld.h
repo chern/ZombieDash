@@ -17,7 +17,8 @@ public:
     virtual void cleanUp();
     
 private:
-    
+    std::list<Actor*> m_actors;
+    Penelope* m_player;
 };
 
 #endif // STUDENTWORLD_H_
