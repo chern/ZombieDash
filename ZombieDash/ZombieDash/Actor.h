@@ -2,16 +2,17 @@
 #define ACTOR_H_
 
 #include "GraphObject.h"
-#include "StudentWorld.h"
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
+
+class StudentWorld;
 
 class Actor: public GraphObject {
 public:
     Actor(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw);
     virtual void doSomething() = 0;
     bool alive() const;
-    StudentWorld* studentWorld() const;
+    StudentWorld* getStudentWorld() const;
     void setDead();
 private:
     bool m_alive;

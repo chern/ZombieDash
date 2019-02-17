@@ -11,11 +11,15 @@ Actor::Actor(int imageID, int startX, int startY, Direction startDir, int depth,
     m_alive = true;
 }
 
+bool Actor::alive() const {
+    return m_alive;
+}
+
 void Actor::setDead() {
     m_alive = false;
 }
 
-StudentWorld* Actor::studentWorld() const {
+StudentWorld* Actor::getStudentWorld() const {
     return m_studentWorld;
 }
 

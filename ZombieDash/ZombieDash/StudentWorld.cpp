@@ -29,4 +29,6 @@ int StudentWorld::move() {
 }
 
 void StudentWorld::cleanUp() {
+//    delete m_player;
+//    m_player = nullptr;
 }
