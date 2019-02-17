@@ -19,6 +19,8 @@ public:
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;
+    int m_score;
+    int m_level;
 };
 
 #endif // STUDENTWORLD_H_

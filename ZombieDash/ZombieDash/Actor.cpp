@@ -57,4 +57,40 @@ void Penelope::doSomething() {
     if (infected()) {
         infect();
     }
+    
+    int ch;
+    if (getStudentWorld()->getKey(ch)) {
+        // The user hit a key during this tick
+        switch (ch) {
+            case KEY_PRESS_LEFT:
+                // move Penelope to the left
+                setDirection(left);
+                moveTo(getX()-4, getY());
+                break;
+            case KEY_PRESS_RIGHT:
+                // move Penelope to the right
+                setDirection(right);
+                moveTo(getX()+4, getY());
+                break;
+            case KEY_PRESS_UP:
+                // move Penelope up
+                setDirection(up);
+                moveTo(getX(), getY()+4);
+                break;
+            case KEY_PRESS_DOWN:
+                // move Penelope down
+                setDirection(down);
+                moveTo(getX(), getY()-4);
+                break;
+            case KEY_PRESS_SPACE:
+                // add flames in front of Penelope;
+                break;
+            case KEY_PRESS_TAB:
+                // landmines??? (double check)
+                break;
+            case KEY_PRESS_ENTER:
+                // vaccinate
+                break;
+        }
+    }
 }
