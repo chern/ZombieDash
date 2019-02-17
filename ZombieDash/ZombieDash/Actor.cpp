@@ -83,14 +83,31 @@ void Penelope::doSomething() {
                 moveTo(getX(), getY()-4);
                 break;
             case KEY_PRESS_SPACE:
-                // add flames in front of Penelope;
+                // add flames in front of Penelope
+                if (m_flamethrowerCharges > 0) {
+                    
+                }
                 break;
             case KEY_PRESS_TAB:
-                // landmines??? (double check)
+                // landmines
+                if (m_landmines > 0) {
+                    
+                }
                 break;
             case KEY_PRESS_ENTER:
                 // vaccinate
+                if (m_vaccines > 0) {
+                    
+                }
                 break;
         }
     }
+}
+
+Wall::Wall(int startX, int startY, StudentWorld* sw): Actor(IID_WALL, startX, startY, right, 0, sw) {
+    
+}
+
+void Wall::doSomething() {
+    return;
 }

@@ -41,4 +41,11 @@ private:
     int m_vaccines;
 };
 
+class Wall: public Actor {
+public:
+    Wall(int startX, int startY, StudentWorld* sw);
+    virtual void doSomething();
+private:
+};
+
 #endif // ACTOR_H_

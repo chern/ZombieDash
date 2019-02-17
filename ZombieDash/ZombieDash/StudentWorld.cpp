@@ -23,6 +23,7 @@ StudentWorld::~StudentWorld() {
 
 int StudentWorld::init() {
     m_player = new Penelope(200, 100, this);
+    m_actors.emplace_back(new Wall(100, 150, this));
     return GWSTATUS_CONTINUE_GAME;
 }
 
