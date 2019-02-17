@@ -104,9 +104,7 @@ void Penelope::doSomething() {
     }
 }
 
-Wall::Wall(int startX, int startY, StudentWorld* sw): Actor(IID_WALL, startX, startY, right, 0, sw) {
-    
-}
+Wall::Wall(int startX, int startY, StudentWorld* sw): Actor(IID_WALL, startX, startY, right, 0, sw) {}
 
 void Wall::doSomething() {
     return;

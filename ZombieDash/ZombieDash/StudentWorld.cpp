@@ -4,8 +4,7 @@
 #include <list>
 using namespace std;
 
-GameWorld* createStudentWorld(string assetPath)
-{
+GameWorld* createStudentWorld(string assetPath) {
 	return new StudentWorld(assetPath);
 }
 
@@ -29,6 +28,24 @@ int StudentWorld::init() {
 
 int StudentWorld::move() {
     m_player->doSomething();
+
+    list<Actor*>::iterator actorsIter = m_actors.begin();
+    while (actorsIter != m_actors.end()) {
+        Actor* thisActor = *actorsIter;
+        if (thisActor->alive()) {
+            thisActor->doSomething();
+        }
+        
+        // if Penelope dies during this tick, return GWSTATUS_PLAYER_DIED
+        
+        // if Penelope completed the current level, return GWSTATUS_FINISHED_LEVEL
+        
+        actorsIter++;
+    }
+    
+    // Remove newly dead actors after each tick
+    
+    // Update teh game status line
     
     return GWSTATUS_CONTINUE_GAME;
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
