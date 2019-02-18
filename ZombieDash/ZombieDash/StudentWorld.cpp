@@ -1,6 +1,9 @@
 #include "StudentWorld.h"
 #include "GameConstants.h"
 #include "Level.h"
+#include <iostream> // defines the overloads of the << operator
+#include <sstream>  // defines the type std::ostringstream
+#include <iomanip>  // defines the manipulator setw
 #include <string>
 #include <list>
 using namespace std;
@@ -103,14 +106,20 @@ bool StudentWorld::canMoveTo(int x, int y) {
 void StudentWorld::loadLevel() {
     Level lev(assetPath());
     
-    string levelFile = "level01.txt";
+    ostringstream oss;  // oss is a name of our choosing.
+    oss.fill('0');
+    oss << "level" << setw(2) << getLevel() << ".txt";
+    cout << oss.str() << endl;
+    string levelFile = oss.str();
+    
+    // string levelFile = "level01.txt";
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
         cerr << "Cannot find " << levelFile << " data file" << endl;
     else if (result == Level::load_fail_bad_format)
         cerr << levelFile << " is improperly formatted" << endl;
     else if (result == Level::load_success) {
-        cerr << "Successfully loaded level!" << endl;
+        cout << "Successfully loaded " << levelFile << endl;
         
         for (int x = 0; x < LEVEL_WIDTH; x++) {
             for (int y = 0; y < LEVEL_HEIGHT; y++) {
@@ -127,7 +136,7 @@ void StudentWorld::loadLevel() {
                         cout << "Location (" << x << "," << y << ") holds a wall" << endl;
                         break;
                     case Level::empty:
-                        cout << "Location (" << x << "," << y << ") is empty" << endl;
+                        // cout << "Location (" << x << "," << y << ") is empty" << endl;
                     default:
                         break;
                 }
