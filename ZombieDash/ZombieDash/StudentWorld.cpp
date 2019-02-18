@@ -1,5 +1,6 @@
 #include "StudentWorld.h"
 #include "GameConstants.h"
+#include "Level.h"
 #include <string>
 #include <list>
 using namespace std;
@@ -19,12 +20,13 @@ StudentWorld::~StudentWorld() {
 }
 
 int StudentWorld::init() {
-    m_player = new Penelope(240, 240, this);
-    m_actors.emplace_back(new Wall(64, 144, this));
-    m_actors.emplace_back(new Wall(208, 192, this));
-    m_actors.emplace_back(new Wall(0, 0, this));
-    m_actors.emplace_back(new Wall(0, 240, this));
-    m_actors.emplace_back(new Wall(240, 0, this));
+    loadLevel();
+//    m_player = new Penelope(240, 240, this);
+//    m_actors.emplace_back(new Wall(64, 144, this));
+//    m_actors.emplace_back(new Wall(208, 192, this));
+//    m_actors.emplace_back(new Wall(0, 0, this));
+//    m_actors.emplace_back(new Wall(0, 240, this));
+//    m_actors.emplace_back(new Wall(240, 0, this));
     
     return GWSTATUS_CONTINUE_GAME;
 }
@@ -96,4 +98,40 @@ bool StudentWorld::canMoveTo(int x, int y) {
         actorsIter++;
     }
     return true;
+}
+
+void StudentWorld::loadLevel() {
+    Level lev(assetPath());
+    
+    string levelFile = "level01.txt";
+    Level::LoadResult result = lev.loadLevel(levelFile);
+    if (result == Level::load_fail_file_not_found)
+        cerr << "Cannot find " << levelFile << " data file" << endl;
+    else if (result == Level::load_fail_bad_format)
+        cerr << levelFile << " is improperly formatted" << endl;
+    else if (result == Level::load_success) {
+        cerr << "Successfully loaded level!" << endl;
+        
+        for (int x = 0; x < LEVEL_WIDTH; x++) {
+            for (int y = 0; y < LEVEL_HEIGHT; y++) {
+                Level::MazeEntry ge = lev.getContentsOf(x, y);
+                int gameCoordinateX = x * SPRITE_WIDTH;
+                int gameCoordinateY = y * SPRITE_HEIGHT;
+                switch (ge) {
+                    case Level::player:
+                        m_player = new Penelope(gameCoordinateX, gameCoordinateY, this);
+                        cout <<"Location (" << x << "," << y << ") is where Penelope starts" << endl;
+                        break;
+                    case Level::wall:
+                        m_actors.emplace_back(new Wall(gameCoordinateX, gameCoordinateY, this));
+                        cout << "Location (" << x << "," << y << ") holds a wall" << endl;
+                        break;
+                    case Level::empty:
+                        cout << "Location (" << x << "," << y << ") is empty" << endl;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
 }
