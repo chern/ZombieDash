@@ -117,22 +117,22 @@ void StudentWorld::loadLevel() {
     else if (result == Level::load_success) {
         cout << "Successfully loaded " << levelFile << endl;
         
-        for (int x = 0; x < LEVEL_WIDTH; x++) {
-            for (int y = 0; y < LEVEL_HEIGHT; y++) {
-                Level::MazeEntry ge = lev.getContentsOf(x, y);
-                int gameCoordinateX = x * SPRITE_WIDTH;
-                int gameCoordinateY = y * SPRITE_HEIGHT;
+        for (int fileX = 0; fileX < LEVEL_WIDTH; fileX++) {
+            for (int fileY = 0; fileY < LEVEL_HEIGHT; fileY++) {
+                Level::MazeEntry ge = lev.getContentsOf(fileX, fileY);
+                int gameX = fileX * SPRITE_WIDTH;
+                int gameY = fileY * SPRITE_HEIGHT;
                 switch (ge) {
                     case Level::player:
-                        m_player = new Penelope(gameCoordinateX, gameCoordinateY, this);
-                        cout <<"Location (" << x << "," << y << ") is where Penelope starts" << endl;
+                        m_player = new Penelope(gameX, gameY, this);
+                        cout <<"Location (" << fileX << "," << fileY << ") is where Penelope starts" << endl;
                         break;
                     case Level::wall:
-                        m_actors.emplace_back(new Wall(gameCoordinateX, gameCoordinateY, this));
-                        cout << "Location (" << x << "," << y << ") holds a wall" << endl;
+                        m_actors.emplace_back(new Wall(gameX, gameY, this));
+                        cout << "Location (" << fileX << "," << fileY << ") holds a wall" << endl;
                         break;
                     case Level::empty:
-                        // cout << "Location (" << x << "," << y << ") is empty" << endl;
+                        // cout << "Location (" << fileX << "," << fileY << ") is empty" << endl;
                     default:
                         break;
                 }
