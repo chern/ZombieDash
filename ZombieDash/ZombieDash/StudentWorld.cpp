@@ -57,7 +57,6 @@ int StudentWorld::move() {
     // Remove newly dead actors after each tick
     
     // Update the game status line
-    // setGameStatText();
     ostringstream oss;  // oss is a name of our choosing.
     oss.fill('0');
     oss << "Score: " << setw(6) << getScore() << "  ";
