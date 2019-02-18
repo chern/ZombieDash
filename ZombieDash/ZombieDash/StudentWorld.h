@@ -15,12 +15,11 @@ public:
     virtual int init();
     virtual int move();
     virtual void cleanUp();
-    
+    bool canMoveTo(int x, int y);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;
-    int m_score;
-    int m_level;
+    void loadLevel();
 };
 
 #endif // STUDENTWORLD_H_

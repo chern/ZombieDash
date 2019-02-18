@@ -30,6 +30,14 @@ Human::Human(int imageID, int startX, int startY, Direction startDir, int depth,
     m_infections = 0;
 }
 
+bool Human::blocksMovement() const {
+    return true;
+}
+
+bool Human::canBeInfected() const {
+    return true;
+}
+
 bool Human::infected() const {
     return m_infected;
 }
@@ -56,6 +64,11 @@ void Penelope::doSomething() {
         return;
     if (infected()) {
         infect();
+        if (infections() >= 500) {
+            setDead();
+            getStudentWorld()->playSound(SOUND_PLAYER_DIE);
+            return;
+        }
     }
     
     int ch;
@@ -65,22 +78,26 @@ void Penelope::doSomething() {
             case KEY_PRESS_LEFT:
                 // move Penelope to the left
                 setDirection(left);
-                moveTo(getX()-4, getY());
+                if (getStudentWorld()->canMoveTo(getX()-4, getY()))
+                    moveTo(getX()-4, getY());
                 break;
             case KEY_PRESS_RIGHT:
                 // move Penelope to the right
                 setDirection(right);
-                moveTo(getX()+4, getY());
+                if (getStudentWorld()->canMoveTo(getX()+4, getY()))
+                    moveTo(getX()+4, getY());
                 break;
             case KEY_PRESS_UP:
                 // move Penelope up
                 setDirection(up);
-                moveTo(getX(), getY()+4);
+                if (getStudentWorld()->canMoveTo(getX(), getY()+4))
+                    moveTo(getX(), getY()+4);
                 break;
             case KEY_PRESS_DOWN:
                 // move Penelope down
                 setDirection(down);
-                moveTo(getX(), getY()-4);
+                if (getStudentWorld()->canMoveTo(getX(), getY()-4))
+                    moveTo(getX(), getY()-4);
                 break;
             case KEY_PRESS_SPACE:
                 // add flames in front of Penelope
@@ -104,8 +121,18 @@ void Penelope::doSomething() {
     }
 }
 
+// WALL
+
 Wall::Wall(int startX, int startY, StudentWorld* sw): Actor(IID_WALL, startX, startY, right, 0, sw) {}
 
 void Wall::doSomething() {
     return;
+}
+
+bool Wall::blocksMovement() const {
+    return true;
+}
+
+bool Wall::canBeInfected() const {
+    return false;
 }
