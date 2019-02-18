@@ -90,9 +90,7 @@ bool StudentWorld::canMoveTo(int x, int y) {
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
         Actor* a = *actorsIter;
-        if (!a->blocksMovement()) {
-            continue;
-        } else {
+        if (a->blocksMovement()) {
             for (int callerX = x; callerX < x + SPRITE_WIDTH; callerX++) {
                 for (int callerY = y; callerY < y + SPRITE_HEIGHT; callerY++) {
                     for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
