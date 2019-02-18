@@ -1,3 +1,5 @@
+// William Chern, UCLA CS 32 Project 3 ("Zombie Dash"), Winter 2019
+
 #ifndef STUDENTWORLD_H_
 #define STUDENTWORLD_H_
 

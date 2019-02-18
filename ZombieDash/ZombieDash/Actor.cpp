@@ -1,3 +1,5 @@
+// William Chern, UCLA CS 32 Project 3 ("Zombie Dash"), Winter 2019
+
 #include "Actor.h"
 #include "StudentWorld.h"
 #include "GameConstants.h"
