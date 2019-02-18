@@ -1108,6 +1108,35 @@
 			<key>uniqueIdentifier</key>
 			<string>C257A7BE-A866-41BF-B714-D6CFD44BF68B</string>
 		</dict>
+		<key>C5339A82-720B-4B43-8C6E-C8F8425AD1FB</key>
+		<dict>
+			<key>className</key>
+			<string>DBGConsoleLog</string>
+			<key>documentTypeString</key>
+			<string>com.apple.dt.IDE.DebuggerLogContentType</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.DebugLog</string>
+			<key>fileName</key>
+			<string>C5339A82-720B-4B43-8C6E-C8F8425AD1FB.xcactivitylog</string>
+			<key>highLevelStatus</key>
+			<string>S</string>
+			<key>schemeIdentifier-containerName</key>
+			<string>ZombieDash project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>ZombieDash</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Debug ZombieDash</string>
+			<key>timeStartedRecording</key>
+			<real>572169436.07411003</real>
+			<key>timeStoppedRecording</key>
+			<real>572169444.25612998</real>
+			<key>title</key>
+			<string>Debug ZombieDash</string>
+			<key>uniqueIdentifier</key>
+			<string>C5339A82-720B-4B43-8C6E-C8F8425AD1FB</string>
+		</dict>
 		<key>C6B08783-2110-4069-8239-C878BFA3B200</key>
 		<dict>
 			<key>className</key>
@@ -1136,6 +1165,35 @@
 			<string>Debug ZombieDash</string>
 			<key>uniqueIdentifier</key>
 			<string>C6B08783-2110-4069-8239-C878BFA3B200</string>
+		</dict>
+		<key>CFBE0D77-1BFE-4F86-959E-A57D43B639A1</key>
+		<dict>
+			<key>className</key>
+			<string>DBGConsoleLog</string>
+			<key>documentTypeString</key>
+			<string>com.apple.dt.IDE.DebuggerLogContentType</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.DebugLog</string>
+			<key>fileName</key>
+			<string>CFBE0D77-1BFE-4F86-959E-A57D43B639A1.xcactivitylog</string>
+			<key>highLevelStatus</key>
+			<string>S</string>
+			<key>schemeIdentifier-containerName</key>
+			<string>ZombieDash project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>ZombieDash</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Debug ZombieDash</string>
+			<key>timeStartedRecording</key>
+			<real>572169489.790784</real>
+			<key>timeStoppedRecording</key>
+			<real>572169505.85373998</real>
+			<key>title</key>
+			<string>Debug ZombieDash</string>
+			<key>uniqueIdentifier</key>
+			<string>CFBE0D77-1BFE-4F86-959E-A57D43B639A1</string>
 		</dict>
 		<key>D0866F05-9EDC-4FC8-826E-AACE99BED7B7</key>
 		<dict>

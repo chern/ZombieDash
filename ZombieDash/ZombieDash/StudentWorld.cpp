@@ -24,12 +24,6 @@ StudentWorld::~StudentWorld() {
 
 int StudentWorld::init() {
     loadLevel();
-//    m_player = new Penelope(240, 240, this);
-//    m_actors.emplace_back(new Wall(64, 144, this));
-//    m_actors.emplace_back(new Wall(208, 192, this));
-//    m_actors.emplace_back(new Wall(0, 0, this));
-//    m_actors.emplace_back(new Wall(0, 240, this));
-//    m_actors.emplace_back(new Wall(240, 0, this));
     
     return GWSTATUS_CONTINUE_GAME;
 }
@@ -50,7 +44,6 @@ int StudentWorld::move() {
             // if Penelope completed the current level, return GWSTATUS_FINISHED_LEVEL
             
         }
-        
         actorsIter++;
     }
     
@@ -75,7 +68,7 @@ void StudentWorld::cleanUp() {
         delete temp;
         temp = nullptr;
         actorsIter = m_actors.erase(actorsIter);
-        // actorsIter++;
+        // cout << "Erasing actor" << endl;
     }
 }
 
