@@ -123,6 +123,18 @@ void Penelope::doSomething() {
     }
 }
 
+int Penelope::getNumLandmines() const {
+    return m_landmines;
+}
+
+int Penelope::getNumFlamethrowerCharges() const {
+    return m_flamethrowerCharges;
+}
+
+int Penelope::getNumVaccines() const {
+    return m_vaccines;
+}
+
 // WALL
 
 Wall::Wall(int startX, int startY, StudentWorld* sw): Actor(IID_WALL, startX, startY, right, 0, sw) {}

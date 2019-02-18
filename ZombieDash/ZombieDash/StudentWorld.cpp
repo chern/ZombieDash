@@ -58,6 +58,18 @@ int StudentWorld::move() {
     
     // Update the game status line
     // setGameStatText();
+    ostringstream oss;  // oss is a name of our choosing.
+    oss.fill('0');
+    oss << "Score: " << setw(6) << getScore() << "  ";
+    oss << "Level: " << getLevel() << "  ";
+    oss << "Lives: "  << getLives() << "  ";
+    oss << "Vaccines: " << m_player->getNumVaccines() << "  ";
+    oss << "Flames: " << m_player->getNumFlamethrowerCharges() << "  ";
+    oss << "Mines: " << m_player->getNumLandmines() << "  ";
+    oss << "Infected: " << m_player->infections();
+    string gameStats = oss.str();
+    setGameStatText(gameStats);
+    // cout << gameStats << endl;
     
     return GWSTATUS_CONTINUE_GAME;
 }

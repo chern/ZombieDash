@@ -41,6 +41,9 @@ class Penelope: public Human {
 public:
     Penelope(int startX, int startY, StudentWorld* sw);
     virtual void doSomething();
+    int getNumLandmines() const;
+    int getNumFlamethrowerCharges() const;
+    int getNumVaccines() const;
 private:
     int m_landmines;
     int m_flamethrowerCharges;
