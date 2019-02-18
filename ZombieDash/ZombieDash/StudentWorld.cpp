@@ -41,8 +41,10 @@ int StudentWorld::move() {
             thisActor->doSomething();
             
             // if Penelope dies during this tick, return GWSTATUS_PLAYER_DIED
-            if (!m_player->alive())
+            if (!m_player->alive()) {
+                decLives();
                 return GWSTATUS_PLAYER_DIED;
+            }
             
             // if Penelope completed the current level, return GWSTATUS_FINISHED_LEVEL
             
@@ -56,10 +58,6 @@ int StudentWorld::move() {
     // setGameStatText();
     
     return GWSTATUS_CONTINUE_GAME;
-    // This code is here merely to allow the game to build, run, and terminate after you hit enter.
-    // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-    // decLives();
-    // return GWSTATUS_PLAYER_DIED;
 }
 
 void StudentWorld::cleanUp() {
