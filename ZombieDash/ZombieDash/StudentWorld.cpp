@@ -29,7 +29,10 @@ int StudentWorld::init() {
 }
 
 int StudentWorld::move() {
-    m_player->doSomething();
+    if (m_player->alive())
+        m_player->doSomething();
+    else
+        return GWSTATUS_PLAYER_DIED;
 
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
