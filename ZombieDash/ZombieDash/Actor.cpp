@@ -156,8 +156,23 @@ bool Wall::canBeDamaged() const {
     return false;
 }
 
+// FALL INTO OBJECT
+FallIntoObject::FallIntoObject(int imageID, int x, int y, int depth, StudentWorld* sw): Actor(imageID, x, y, right, depth, sw) {}
+
+bool FallIntoObject::blocksMovement() const {
+    return false;
+}
+
+bool FallIntoObject::canBeInfected() const {
+    return false;
+}
+
+bool FallIntoObject::canBeDamaged() const {
+    return false;
+}
+
 // EXIT
-Exit::Exit(int x, int y, StudentWorld* sw): Actor(IID_EXIT, x, y, right, 1, sw) {}
+Exit::Exit(int x, int y, StudentWorld* sw): FallIntoObject(IID_EXIT, x, y, 1, sw) {}
 
 void Exit::doSomething() {
     // 1. Determine whether or not exit overlaps with a citizen
@@ -170,14 +185,3 @@ void Exit::doSomething() {
     }
 }
 
-bool Exit::blocksMovement() const {
-    return false;
-}
-
-bool Exit::canBeInfected() const {
-    return false;
-}
-
-bool Exit::canBeDamaged() const {
-    return false;
-}

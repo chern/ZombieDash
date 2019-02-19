@@ -62,13 +62,18 @@ public:
 private:
 };
 
-class Exit: public Actor {
+class FallIntoObject: public Actor {
 public:
-    Exit(int x, int y, StudentWorld* sw);
-    virtual void doSomething();
+    FallIntoObject(int imageID, int x, int y, int depth, StudentWorld* sw);
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
+};
+
+class Exit: public FallIntoObject {
+public:
+    Exit(int x, int y, StudentWorld* sw);
+    virtual void doSomething();
 private:
 };
 
