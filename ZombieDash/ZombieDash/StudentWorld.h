@@ -22,6 +22,9 @@ public:
     int citizensRemaining() const;
     int zombiesRemaining() const;
     void finishLevel();
+    void addVaccinesToPlayer(int num);
+    void addFlamethrowerChargersToPlayer(int num);
+    void addLandminesToPlayer(int num);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;

@@ -145,6 +145,18 @@ int Penelope::getNumVaccines() const {
     return m_vaccines;
 }
 
+void Penelope::addVaccines(int num) {
+    m_vaccines += num;
+}
+
+void Penelope::addLandmines(int num) {
+    m_landmines += num;
+}
+
+void Penelope::addFlamethrowerCharges(int num) {
+    m_flamethrowerCharges += num;
+}
+
 // CITIZEN
 Citizen::Citizen(int startX, int startY, StudentWorld* sw): Human(IID_CITIZEN, startX, startY, sw) {
     m_ticks = 0;
@@ -285,4 +297,59 @@ void Pit::doSomething() {
 
 bool Pit::blocksFlames() const {
     return false;
+}
+
+// GOODIE
+Goodie::Goodie(int imageID, int x, int y, StudentWorld* sw): Actor(imageID, x, y, right, 1, sw) {}
+
+void Goodie::doSomething() {
+    if (!alive())
+        return;
+    if (getStudentWorld()->overlapsWithPlayer(getX(), getY())) {
+        getStudentWorld()->increaseScore(50);
+        this->setDead();
+        getStudentWorld()->playSound(SOUND_GOT_GOODIE);
+        giveSpecializedGoodie();
+    }
+}
+
+bool Goodie::blocksMovement() const {
+    return false;
+}
+
+bool Goodie::canBeInfected() const {
+    return false;
+}
+
+bool Goodie::canBeDamaged() const {
+    return true;
+}
+
+bool Goodie::blocksFlames() const {
+    return false;
+}
+
+bool Goodie::canFall() const {
+    return false;
+}
+
+// VACCINE GOODIE
+VaccineGoodie::VaccineGoodie(int x, int y, StudentWorld *sw): Goodie(IID_VACCINE_GOODIE, x, y, sw) {}
+
+void VaccineGoodie::giveSpecializedGoodie() {
+    getStudentWorld()->addVaccinesToPlayer(1);
+}
+
+// GAS CAN GOODIE
+GasCanGoodie::GasCanGoodie(int x, int y, StudentWorld* sw): Goodie(IID_GAS_CAN_GOODIE, x, y, sw) {}
+
+void GasCanGoodie::giveSpecializedGoodie() {
+    getStudentWorld()->addFlamethrowerChargersToPlayer(5);
+}
+
+// LANDMINE GOODIE
+LandmineGoodie::LandmineGoodie(int x, int y, StudentWorld* sw): Goodie(IID_LANDMINE_GOODIE, x, y, sw) {}
+
+void LandmineGoodie::giveSpecializedGoodie() {
+    getStudentWorld()->addLandminesToPlayer(2);
 }

@@ -50,10 +50,13 @@ public:
     int getNumLandmines() const;
     int getNumFlamethrowerCharges() const;
     int getNumVaccines() const;
+    void addVaccines(int num);
+    void addLandmines(int num);
+    void addFlamethrowerCharges(int num);
 private:
+    int m_vaccines;
     int m_landmines;
     int m_flamethrowerCharges;
-    int m_vaccines;
 };
 
 class Citizen: public Human {
@@ -124,6 +127,40 @@ public:
     Pit(int x, int y, StudentWorld* sw);
     virtual void doSomething();
     virtual bool blocksFlames() const;
+};
+
+class Goodie: public Actor {
+public:
+    Goodie(int imageID, int x, int y, StudentWorld* sw);
+    virtual void doSomething();
+    virtual bool blocksMovement() const;
+    virtual bool canBeInfected() const; // by vomit
+    virtual bool canBeDamaged() const; // by flame
+    virtual bool blocksFlames() const;
+    virtual bool canFall() const;
+private:
+    virtual void giveSpecializedGoodie() = 0;
+};
+
+class VaccineGoodie: public Goodie {
+public:
+    VaccineGoodie(int x, int y, StudentWorld* sw);
+private:
+    virtual void giveSpecializedGoodie();
+};
+
+class GasCanGoodie: public Goodie {
+public:
+    GasCanGoodie(int x, int y, StudentWorld* sw);
+private:
+    virtual void giveSpecializedGoodie();
+};
+
+class LandmineGoodie: public Goodie {
+public:
+    LandmineGoodie(int x, int y, StudentWorld* sw);
+private:
+    virtual void giveSpecializedGoodie();
 };
 
 #endif // ACTOR_H_

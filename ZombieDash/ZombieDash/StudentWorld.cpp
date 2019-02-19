@@ -45,9 +45,9 @@ int StudentWorld::move() {
 
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
-        Actor* thisActor = *actorsIter;
-        if (thisActor->alive()) {
-            thisActor->doSomething();
+        Actor* a = *actorsIter;
+        if (a->alive()) {
+            a->doSomething();
             
             // if Penelope dies during this tick, return GWSTATUS_PLAYER_DIED
             if (!m_player->alive()) {
@@ -63,6 +63,16 @@ int StudentWorld::move() {
     }
     
     // Remove newly dead actors after each tick
+    actorsIter = m_actors.begin();
+    while (actorsIter != m_actors.end()) {
+        Actor* a = *actorsIter;
+        if (!a->alive()) {
+            delete a;
+            a = nullptr;
+            actorsIter = m_actors.erase(actorsIter);
+        } else
+            actorsIter++;
+    }
     
     // Update the game status line
     string spaceSeparator = "  ";
@@ -149,6 +159,18 @@ void StudentWorld::finishLevel() {
     m_levelFinished = true;
 }
 
+void StudentWorld::addVaccinesToPlayer(int num) {
+    m_player->addVaccines(num);
+}
+
+void StudentWorld::addFlamethrowerChargersToPlayer(int num) {
+    m_player->addFlamethrowerCharges(num);
+}
+
+void StudentWorld::addLandminesToPlayer(int num) {
+    m_player->addLandmines(num);
+}
+
 void StudentWorld::loadLevel() {
     Level lev(assetPath());
     
@@ -201,6 +223,18 @@ void StudentWorld::loadLevel() {
                     case Level::pit:
                         m_actors.emplace_back(new Pit(gameX, gameY, this));
                         cout << "Location (" << fileX << "," << fileY << ") has a pit" << endl;
+                        break;
+                    case Level::vaccine_goodie:
+                        m_actors.emplace_back(new VaccineGoodie(gameX, gameY, this));
+                        cout << "Location (" << fileX << "," << fileY << ") has a vaccine goodie" << endl;
+                        break;
+                    case Level::gas_can_goodie:
+                        m_actors.emplace_back(new GasCanGoodie(gameX, gameY, this));
+                        cout << "Location (" << fileX << "," << fileY << ") has a gas-can goodie" << endl;
+                        break;
+                    case Level::landmine_goodie:
+                        m_actors.emplace_back(new LandmineGoodie(gameX, gameY, this));
+                        cout << "Location (" << fileX << "," << fileY << ") has a landmine goodie" << endl;
                         break;
                     case Level::empty:
                         // cout << "Location (" << fileX << "," << fileY << ") is empty" << endl;
