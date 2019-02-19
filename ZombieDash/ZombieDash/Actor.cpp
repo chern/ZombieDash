@@ -42,6 +42,10 @@ bool Human::canBeDamaged() const {
     return true;
 }
 
+bool Human::blocksFlames() const {
+    return false;
+}
+
 bool Human::infected() const {
     return m_infected;
 }
@@ -156,6 +160,10 @@ bool Wall::canBeDamaged() const {
     return false;
 }
 
+bool Wall::blocksFlames() const {
+    return true;
+}
+
 // FALL INTO OBJECT
 FallIntoObject::FallIntoObject(int imageID, int x, int y, int depth, StudentWorld* sw): Actor(imageID, x, y, right, depth, sw) {}
 
@@ -175,14 +183,18 @@ bool FallIntoObject::canBeDamaged() const {
 Exit::Exit(int x, int y, StudentWorld* sw): FallIntoObject(IID_EXIT, x, y, 1, sw) {}
 
 void Exit::doSomething() {
-    // 1. Determine whether or not exit overlaps with a citizen
+    // 1. Determine if exit overlaps with a citizen
     
     
-    // 2. Determine whether or not exit overlaps with Penelope AND there are no citizens left
+    // 2. Determine if exit overlaps with Penelope AND there are no citizens left
     if (getStudentWorld()->overlapsWithPlayer(getX(), getY()) && getStudentWorld()->citizensRemaining() == 0) {
         getStudentWorld()->playSound(SOUND_LEVEL_FINISHED);
         getStudentWorld()->finishLevel();
     }
+}
+
+bool Exit::blocksFlames() const {
+    return true;
 }
 
 // PIT
@@ -190,4 +202,8 @@ Pit::Pit(int x, int y, StudentWorld* sw): FallIntoObject(IID_PIT, x, y, 0, sw) {
 
 void Pit::doSomething() {
     return;
+}
+
+bool Pit::blocksFlames() const {
+    return false;
 }

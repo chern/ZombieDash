@@ -62,14 +62,15 @@ int StudentWorld::move() {
     // Remove newly dead actors after each tick
     
     // Update the game status line
-    ostringstream oss;  // oss is a name of our choosing.
+    string spaceSeparator = "  ";
+    ostringstream oss;
     oss.fill('0');
-    oss << "Score: " << setw(6) << getScore() << "  ";
-    oss << "Level: " << getLevel() << "  ";
-    oss << "Lives: "  << getLives() << "  ";
-    oss << "Vaccines: " << m_player->getNumVaccines() << "  ";
-    oss << "Flames: " << m_player->getNumFlamethrowerCharges() << "  ";
-    oss << "Mines: " << m_player->getNumLandmines() << "  ";
+    oss << "Score: " << setw(6) << getScore() << spaceSeparator;
+    oss << "Level: " << getLevel() << spaceSeparator;
+    oss << "Lives: "  << getLives() << spaceSeparator;
+    oss << "Vaccines: " << m_player->getNumVaccines() << spaceSeparator;
+    oss << "Flames: " << m_player->getNumFlamethrowerCharges() << spaceSeparator;
+    oss << "Mines: " << m_player->getNumLandmines() << spaceSeparator;
     oss << "Infected: " << m_player->infections();
     string gameStats = oss.str();
     setGameStatText(gameStats);
@@ -142,7 +143,7 @@ void StudentWorld::finishLevel() {
 void StudentWorld::loadLevel() {
     Level lev(assetPath());
     
-    ostringstream oss;  // oss is a name of our choosing.
+    ostringstream oss;
     oss.fill('0');
     oss << "level" << setw(2) << getLevel() << ".txt";
     cout << oss.str() << endl;

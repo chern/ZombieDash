@@ -19,6 +19,7 @@ public:
     virtual bool blocksMovement() const = 0;
     virtual bool canBeInfected() const = 0; // by vomit
     virtual bool canBeDamaged() const = 0; // by flame
+    virtual bool blocksFlames() const = 0;
 private:
     bool m_alive;
     StudentWorld* m_studentWorld;
@@ -30,6 +31,7 @@ public:
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
+    virtual bool blocksFlames() const;
     bool infected() const;
     int infections() const;
     void infect();
@@ -59,6 +61,7 @@ public:
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
+    virtual bool blocksFlames() const;
 private:
 };
 
@@ -74,6 +77,7 @@ class Exit: public FallIntoObject {
 public:
     Exit(int x, int y, StudentWorld* sw);
     virtual void doSomething();
+    virtual bool blocksFlames() const;
 private:
 };
 
@@ -81,6 +85,7 @@ class Pit: public FallIntoObject {
 public:
     Pit(int x, int y, StudentWorld* sw);
     virtual void doSomething();
+    virtual bool blocksFlames() const;
 };
 
 #endif // ACTOR_H_
