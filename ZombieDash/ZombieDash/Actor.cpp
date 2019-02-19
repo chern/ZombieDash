@@ -353,3 +353,53 @@ LandmineGoodie::LandmineGoodie(int x, int y, StudentWorld* sw): Goodie(IID_LANDM
 void LandmineGoodie::giveSpecializedGoodie() {
     getStudentWorld()->addLandminesToPlayer(2);
 }
+
+// PROJECTILE
+Projectile::Projectile(int imageID, int x, int y, Direction dir, StudentWorld* sw): Actor(imageID, x, y, dir, 0, sw) {
+    m_ticks = 0;
+}
+
+void Projectile::doSomething() {
+    m_ticks++;
+    if (!alive())
+        return;
+    if (m_ticks >= 2) {
+        setDead();
+        return;
+    }
+    inflictSpecializedDamage();
+}
+
+bool Projectile::blocksMovement() const {
+    return false;
+}
+
+bool Projectile::canBeInfected() const {
+    return false;
+}
+
+bool Projectile::canBeDamaged() const {
+    return false;
+}
+
+bool Projectile::blocksFlames() const {
+    return false;
+}
+
+bool Projectile::canFall() const {
+    return false;
+}
+
+// FLAME
+Flame::Flame(int x, int y, Direction dir, StudentWorld* sw): Projectile(IID_FLAME, x, y, dir, sw) {}
+
+void Flame::inflictSpecializedDamage() {
+    getStudentWorld()->inflictFlameDamageAround(getX(), getY());
+}
+
+// VOMIT
+Vomit::Vomit(int x, int y, Direction dir, StudentWorld* sw): Projectile(IID_VOMIT, x, y, dir, sw) {}
+
+void Vomit::inflictSpecializedDamage() {
+    getStudentWorld()->inflictVomitDamageAround(getX(), getY());
+}

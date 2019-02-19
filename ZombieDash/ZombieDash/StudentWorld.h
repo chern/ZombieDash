@@ -25,6 +25,8 @@ public:
     void addVaccinesToPlayer(int num);
     void addFlamethrowerChargersToPlayer(int num);
     void addLandminesToPlayer(int num);
+    void inflictFlameDamageAround(int x, int y);
+    void inflictVomitDamageAround(int x, int y);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;

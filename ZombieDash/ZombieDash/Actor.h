@@ -163,4 +163,32 @@ private:
     virtual void giveSpecializedGoodie();
 };
 
+class Projectile: public Actor {
+public:
+    Projectile(int imageID, int x, int y, Direction dir, StudentWorld* sw);
+    virtual void doSomething();
+    virtual bool blocksMovement() const;
+    virtual bool canBeInfected() const; // by vomit
+    virtual bool canBeDamaged() const; // by flame
+    virtual bool blocksFlames() const;
+    virtual bool canFall() const;
+private:
+    int m_ticks;
+    virtual void inflictSpecializedDamage() = 0;
+};
+
+class Flame: public Projectile {
+public:
+    Flame(int x, int y, Direction dir, StudentWorld* sw);
+private:
+    virtual void inflictSpecializedDamage();
+};
+
+class Vomit: public Projectile {
+public:
+    Vomit(int x, int y, Direction dir, StudentWorld* sw);
+private:
+    virtual void inflictSpecializedDamage();
+};
+
 #endif // ACTOR_H_

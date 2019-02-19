@@ -171,6 +171,23 @@ void StudentWorld::addLandminesToPlayer(int num) {
     m_player->addLandmines(num);
 }
 
+void StudentWorld::inflictFlameDamageAround(int x, int y) {
+    list<Actor*>::iterator actorsIter = m_actors.begin();
+    while (actorsIter != m_actors.end()) {
+        Actor* a = *actorsIter;
+        if (a->canBeDamaged()) {
+            if (overlapsWith(x, y, a->getX(), a->getY())) {
+                a->setDead();
+            }
+        }
+        actorsIter++;
+    }
+}
+
+void StudentWorld::inflictVomitDamageAround(int x, int y) {
+    
+}
+
 void StudentWorld::loadLevel() {
     Level lev(assetPath());
     
