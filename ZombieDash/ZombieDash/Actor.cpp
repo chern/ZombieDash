@@ -185,3 +185,9 @@ void Exit::doSomething() {
     }
 }
 
+// PIT
+Pit::Pit(int x, int y, StudentWorld* sw): FallIntoObject(IID_PIT, x, y, 0, sw) {}
+
+void Pit::doSomething() {
+    return;
+}

@@ -179,6 +179,10 @@ void StudentWorld::loadLevel() {
                         // m_citizens++;
                         cout << "Location (" << fileX << "," << fileY << ") starts with a citizen" << endl;
                         break;
+                    case Level::pit:
+                        m_actors.emplace_back(new Pit(gameX, gameY, this));
+                        cout << "Location (" << fileX << "," << fileY << ") has a pit" << endl;
+                        break;
                     case Level::empty:
                         // cout << "Location (" << fileX << "," << fileY << ") is empty" << endl;
                     default:

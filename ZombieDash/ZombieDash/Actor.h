@@ -77,4 +77,10 @@ public:
 private:
 };
 
+class Pit: public FallIntoObject {
+public:
+    Pit(int x, int y, StudentWorld* sw);
+    virtual void doSomething();
+};
+
 #endif // ACTOR_H_
