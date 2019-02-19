@@ -7,7 +7,6 @@
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 
 // ACTOR
-
 Actor::Actor(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw): GraphObject(imageID, startX, startY, startDir, depth) {
     m_studentWorld = sw;
     m_alive = true;
@@ -26,7 +25,6 @@ StudentWorld* Actor::getStudentWorld() const {
 }
 
 // HUMAN
-
 Human::Human(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw): Actor(imageID, startX, startY, startDir, depth, sw) {
     m_infected = false;
     m_infections = 0;
@@ -37,6 +35,10 @@ bool Human::blocksMovement() const {
 }
 
 bool Human::canBeInfected() const {
+    return true;
+}
+
+bool Human::canBeDamaged() const {
     return true;
 }
 
@@ -136,8 +138,7 @@ int Penelope::getNumVaccines() const {
 }
 
 // WALL
-
-Wall::Wall(int startX, int startY, StudentWorld* sw): Actor(IID_WALL, startX, startY, right, 0, sw) {}
+Wall::Wall(int x, int y, StudentWorld* sw): Actor(IID_WALL, x, y, right, 0, sw) {}
 
 void Wall::doSomething() {
     return;
@@ -148,5 +149,35 @@ bool Wall::blocksMovement() const {
 }
 
 bool Wall::canBeInfected() const {
+    return false;
+}
+
+bool Wall::canBeDamaged() const {
+    return false;
+}
+
+// EXIT
+Exit::Exit(int x, int y, StudentWorld* sw): Actor(IID_EXIT, x, y, right, 1, sw) {}
+
+void Exit::doSomething() {
+    // 1. Determine whether or not exit overlaps with a citizen
+    
+    
+    // 2. Determine whether or not exit overlaps with Penelope AND there are no citizens left
+    if (getStudentWorld()->overlapsWithPlayer(getX(), getY()) && getStudentWorld()->citizensRemaining() == 0) {
+        getStudentWorld()->playSound(SOUND_LEVEL_FINISHED);
+        getStudentWorld()->finishLevel();
+    }
+}
+
+bool Exit::blocksMovement() const {
+    return false;
+}
+
+bool Exit::canBeInfected() const {
+    return false;
+}
+
+bool Exit::canBeDamaged() const {
     return false;
 }

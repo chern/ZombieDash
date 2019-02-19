@@ -7,6 +7,7 @@
 #include <sstream>  // defines the type std::ostringstream
 #include <iomanip>  // defines the manipulator setw
 #include <string>
+#include <cmath>
 #include <list>
 using namespace std;
 
@@ -18,6 +19,8 @@ GameWorld* createStudentWorld(string assetPath) {
 
 StudentWorld::StudentWorld(string assetPath) : GameWorld(assetPath) {
     m_player = nullptr;
+    m_citizens = 0;
+    m_levelFinished = false;
 }
 
 StudentWorld::~StudentWorld() {
@@ -26,6 +29,7 @@ StudentWorld::~StudentWorld() {
 
 int StudentWorld::init() {
     loadLevel();
+    m_levelFinished = false;
     
     return GWSTATUS_CONTINUE_GAME;
 }
@@ -49,7 +53,8 @@ int StudentWorld::move() {
             }
             
             // if Penelope completed the current level, return GWSTATUS_FINISHED_LEVEL
-            
+            if (m_levelFinished)
+                return GWSTATUS_FINISHED_LEVEL;
         }
         actorsIter++;
     }
@@ -86,8 +91,8 @@ void StudentWorld::cleanUp() {
     }
 }
 
-bool StudentWorld::canMoveTo(int x, int y) {
-    list<Actor*>::iterator actorsIter = m_actors.begin();
+bool StudentWorld::canMoveTo(int x, int y) const {
+    list<Actor*>::const_iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
         Actor* a = *actorsIter;
         if (a->blocksMovement()) {
@@ -106,6 +111,32 @@ bool StudentWorld::canMoveTo(int x, int y) {
         actorsIter++;
     }
     return true;
+}
+
+bool StudentWorld::overlapsWith(int x1, int y1, int x2, int y2) const {
+    double centerX1 = x1 + (SPRITE_WIDTH/2);
+    double centerY1 = y1 + (SPRITE_HEIGHT/2);
+    double centerX2 = x2 + (SPRITE_WIDTH/2);
+    double centerY2 = y2 + (SPRITE_HEIGHT/2);
+    
+    double deltaX = abs(centerX2 - centerX1);
+    double deltaY = abs(centerY2 - centerY1);
+    
+    if (pow(deltaX, 2) + pow(deltaY, 2) <= pow(10, 2))
+        return true;
+    return false;
+}
+
+bool StudentWorld::overlapsWithPlayer(int x, int y) const {
+    return overlapsWith(x, y, m_player->getX(), m_player->getY());
+}
+
+int StudentWorld::citizensRemaining() const {
+    return m_citizens;
+}
+
+void StudentWorld::finishLevel() {
+    m_levelFinished = true;
 }
 
 void StudentWorld::loadLevel() {
@@ -140,6 +171,14 @@ void StudentWorld::loadLevel() {
                         m_actors.emplace_back(new Wall(gameX, gameY, this));
                         cout << "Location (" << fileX << "," << fileY << ") holds a wall" << endl;
                         break;
+                    case Level::exit:
+                        m_actors.emplace_back(new Exit(gameX, gameY, this));
+                        cout << "Location (" << fileX << "," << fileY << ") has an exit" << endl;
+                        break;
+                    case Level::citizen:
+                        // m_citizens++;
+                        cout << "Location (" << fileX << "," << fileY << ") starts with a citizen" << endl;
+                        break;
                     case Level::empty:
                         // cout << "Location (" << fileX << "," << fileY << ") is empty" << endl;
                     default:
@@ -149,3 +188,4 @@ void StudentWorld::loadLevel() {
         }
     }
 }
+

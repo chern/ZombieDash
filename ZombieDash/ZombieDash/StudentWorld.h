@@ -17,11 +17,17 @@ public:
     virtual int init();
     virtual int move();
     virtual void cleanUp();
-    bool canMoveTo(int x, int y);
+    bool canMoveTo(int x, int y) const;
+    bool overlapsWithPlayer(int x, int y) const;
+    int citizensRemaining() const;
+    void finishLevel();
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;
+    int m_citizens;
+    bool m_levelFinished;
     void loadLevel();
+    bool overlapsWith(int x1, int y1, int x2, int y2) const;
 };
 
 #endif // STUDENTWORLD_H_

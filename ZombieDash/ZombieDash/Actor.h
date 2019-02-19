@@ -17,7 +17,8 @@ public:
     StudentWorld* getStudentWorld() const;
     void setDead();
     virtual bool blocksMovement() const = 0;
-    virtual bool canBeInfected() const = 0;
+    virtual bool canBeInfected() const = 0; // by vomit
+    virtual bool canBeDamaged() const = 0; // by flame
 private:
     bool m_alive;
     StudentWorld* m_studentWorld;
@@ -28,6 +29,7 @@ public:
     Human(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw);
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
+    virtual bool canBeDamaged() const;
     bool infected() const;
     int infections() const;
     void infect();
@@ -52,10 +54,21 @@ private:
 
 class Wall: public Actor {
 public:
-    Wall(int startX, int startY, StudentWorld* sw);
+    Wall(int x, int y, StudentWorld* sw);
     virtual void doSomething();
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
+    virtual bool canBeDamaged() const;
+private:
+};
+
+class Exit: public Actor {
+public:
+    Exit(int x, int y, StudentWorld* sw);
+    virtual void doSomething();
+    virtual bool blocksMovement() const;
+    virtual bool canBeInfected() const;
+    virtual bool canBeDamaged() const;
 private:
 };
 
