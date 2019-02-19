@@ -17,9 +17,10 @@ GameWorld* createStudentWorld(string assetPath) {
 
 // Students:  Add code to this file, StudentWorld.h, Actor.h and Actor.cpp
 
-StudentWorld::StudentWorld(string assetPath) : GameWorld(assetPath) {
+StudentWorld::StudentWorld(string assetPath): GameWorld(assetPath) {
     m_player = nullptr;
     m_citizens = 0;
+    m_zombies = 0;
     m_levelFinished = false;
 }
 
@@ -29,6 +30,8 @@ StudentWorld::~StudentWorld() {
 
 int StudentWorld::init() {
     loadLevel();
+    m_citizens = 0;
+    m_zombies = 0;
     m_levelFinished = false;
     
     return GWSTATUS_CONTINUE_GAME;
@@ -90,6 +93,8 @@ void StudentWorld::cleanUp() {
         actorsIter = m_actors.erase(actorsIter);
         // cout << "Erasing actor" << endl;
     }
+    m_citizens = 0;
+    m_zombies = 0;
 }
 
 bool StudentWorld::canMoveTo(int x, int y) const {
@@ -136,6 +141,10 @@ int StudentWorld::citizensRemaining() const {
     return m_citizens;
 }
 
+int StudentWorld::zombiesRemaining() const {
+    return m_zombies;
+}
+
 void StudentWorld::finishLevel() {
     m_levelFinished = true;
 }
@@ -170,15 +179,24 @@ void StudentWorld::loadLevel() {
                         break;
                     case Level::wall:
                         m_actors.emplace_back(new Wall(gameX, gameY, this));
-                        cout << "Location (" << fileX << "," << fileY << ") holds a wall" << endl;
+                        // cout << "Location (" << fileX << "," << fileY << ") holds a wall" << endl;
                         break;
                     case Level::exit:
                         m_actors.emplace_back(new Exit(gameX, gameY, this));
                         cout << "Location (" << fileX << "," << fileY << ") has an exit" << endl;
                         break;
                     case Level::citizen:
-                        // m_citizens++;
+                        m_actors.emplace_back(new Citizen(gameX, gameY, this));
+                        m_citizens++;
                         cout << "Location (" << fileX << "," << fileY << ") starts with a citizen" << endl;
+                        break;
+                    case Level::dumb_zombie:
+                        m_actors.emplace_back(new DumbZombie(gameX, gameY, this));
+                        m_zombies++;
+                        break;
+                    case Level::smart_zombie:
+                        m_actors.emplace_back(new SmartZombie(gameX, gameY, this));
+                        m_zombies++;
                         break;
                     case Level::pit:
                         m_actors.emplace_back(new Pit(gameX, gameY, this));

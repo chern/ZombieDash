@@ -20,11 +20,13 @@ public:
     bool canMoveTo(int x, int y) const;
     bool overlapsWithPlayer(int x, int y) const;
     int citizensRemaining() const;
+    int zombiesRemaining() const;
     void finishLevel();
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;
     int m_citizens;
+    int m_zombies;
     bool m_levelFinished;
     void loadLevel();
     bool overlapsWith(int x1, int y1, int x2, int y2) const;

@@ -25,7 +25,7 @@ StudentWorld* Actor::getStudentWorld() const {
 }
 
 // HUMAN
-Human::Human(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw): Actor(imageID, startX, startY, startDir, depth, sw) {
+Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {
     m_infected = false;
     m_infections = 0;
 }
@@ -46,6 +46,10 @@ bool Human::blocksFlames() const {
     return false;
 }
 
+bool Human::canFall() const {
+    return true;
+}
+
 bool Human::infected() const {
     return m_infected;
 }
@@ -61,7 +65,7 @@ void Human::infect() {
 }
 
 // PENELOPE
-Penelope::Penelope(int startX, int startY, StudentWorld* sw): Human(IID_PLAYER, startX, startY, right, 0, sw) {
+Penelope::Penelope(int startX, int startY, StudentWorld* sw): Human(IID_PLAYER, startX, startY, sw) {
     m_landmines = 0;
     m_flamethrowerCharges = 0;
     m_vaccines = 0;
@@ -141,6 +145,73 @@ int Penelope::getNumVaccines() const {
     return m_vaccines;
 }
 
+// CITIZEN
+Citizen::Citizen(int startX, int startY, StudentWorld* sw): Human(IID_CITIZEN, startX, startY, sw) {
+    m_ticks = 0;
+}
+
+void Citizen::doSomething() {
+    m_ticks++;
+    if(!alive())
+        return;
+    if (infected()) {
+        infect();
+        if (infections() >= 500) {
+            setDead();
+            getStudentWorld()->playSound(SOUND_ZOMBIE_BORN);
+            getStudentWorld()->increaseScore(-1000);
+            // introduce a new zombie object at the same (x,y) coordinate
+                // 70% chance of DumbZombie
+                // 30% chance of SmartZombie
+            return;
+        }
+    }
+    if (m_ticks % 2 == 0)
+        return; // paralysis tick
+    // Citizen must determine its distance to Penelope
+    // Citizen must determine its distance to the nearest zombie
+}
+
+// ZOMBIE
+Zombie::Zombie(int startX, int startY, StudentWorld* sw): Actor(IID_ZOMBIE, startX, startY, right, 0, sw) {
+    m_ticks = 0;
+    m_movementPlanDistance = 0;
+}
+
+void Zombie::doSomething() {
+    m_ticks++;
+    if (!alive())
+        return;
+    if (m_ticks % 2 == 0)
+        return; // paralysis tick
+}
+
+bool Zombie::blocksMovement() const {
+    return true;
+}
+
+bool Zombie::canBeInfected() const {
+    return false;
+}
+
+bool Zombie::canBeDamaged() const {
+    return true;
+}
+
+bool Zombie::blocksFlames() const {
+    return false;
+}
+
+bool Zombie::canFall() const {
+    return true;
+}
+
+// DUMB ZOMBIE
+DumbZombie::DumbZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
+
+// SMART ZOMBIE
+SmartZombie::SmartZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
+
 // WALL
 Wall::Wall(int x, int y, StudentWorld* sw): Actor(IID_WALL, x, y, right, 0, sw) {}
 
@@ -164,6 +235,10 @@ bool Wall::blocksFlames() const {
     return true;
 }
 
+bool Wall::canFall() const {
+    return false;
+}
+
 // FALL INTO OBJECT
 FallIntoObject::FallIntoObject(int imageID, int x, int y, int depth, StudentWorld* sw): Actor(imageID, x, y, right, depth, sw) {}
 
@@ -176,6 +251,10 @@ bool FallIntoObject::canBeInfected() const {
 }
 
 bool FallIntoObject::canBeDamaged() const {
+    return false;
+}
+
+bool FallIntoObject::canFall() const {
     return false;
 }
 

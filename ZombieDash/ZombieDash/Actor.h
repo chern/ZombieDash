@@ -20,6 +20,7 @@ public:
     virtual bool canBeInfected() const = 0; // by vomit
     virtual bool canBeDamaged() const = 0; // by flame
     virtual bool blocksFlames() const = 0;
+    virtual bool canFall() const = 0;
 private:
     bool m_alive;
     StudentWorld* m_studentWorld;
@@ -27,11 +28,12 @@ private:
 
 class Human: public Actor {
 public:
-    Human(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw);
+    Human(int imageID, int startX, int startY, StudentWorld* sw);
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
     virtual bool blocksFlames() const;
+    virtual bool canFall() const;
     bool infected() const;
     int infections() const;
     void infect();
@@ -54,6 +56,40 @@ private:
     int m_vaccines;
 };
 
+class Citizen: public Human {
+public:
+    Citizen(int startX, int startY, StudentWorld* sw);
+    virtual void doSomething();
+private:
+    unsigned long m_ticks; // used for "paralysis ticks"
+};
+
+class Zombie: public Actor {
+public:
+    Zombie(int startX, int startY, StudentWorld* sw);
+    virtual void doSomething();
+    virtual bool blocksMovement() const;
+    virtual bool canBeInfected() const; // by vomit
+    virtual bool canBeDamaged() const; // by flame
+    virtual bool blocksFlames() const;
+    virtual bool canFall() const;
+private:
+    unsigned long m_ticks;
+    int m_movementPlanDistance;
+};
+
+class DumbZombie: public Zombie {
+public:
+    DumbZombie(int startX, int startY, StudentWorld* sw);
+private:
+};
+
+class SmartZombie: public Zombie {
+public:
+    SmartZombie(int startX, int startY, StudentWorld* sw);
+private:
+};
+
 class Wall: public Actor {
 public:
     Wall(int x, int y, StudentWorld* sw);
@@ -62,6 +98,7 @@ public:
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
     virtual bool blocksFlames() const;
+    virtual bool canFall() const;
 private:
 };
 
@@ -71,6 +108,7 @@ public:
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
+    virtual bool canFall() const;
 };
 
 class Exit: public FallIntoObject {
