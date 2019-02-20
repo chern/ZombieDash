@@ -16,11 +16,11 @@ public:
     bool alive() const;
     StudentWorld* getStudentWorld() const;
     void setDead();
-    virtual bool blocksMovement() const = 0;
-    virtual bool canBeInfected() const = 0; // by vomit
-    virtual bool canBeDamaged() const = 0; // by flame
-    virtual bool blocksFlames() const = 0;
-    virtual bool canFall() const = 0;
+    virtual bool blocksMovement() const;
+    virtual bool canBeInfected() const; // by vomit
+    virtual bool canBeDamaged() const; // by flame
+    virtual bool blocksFlames() const;
+    virtual bool canFall() const;
 private:
     bool m_alive;
     StudentWorld* m_studentWorld;
@@ -32,7 +32,6 @@ public:
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
-    virtual bool blocksFlames() const;
     virtual bool canFall() const;
     bool infected() const;
     int infections() const;
@@ -57,6 +56,9 @@ private:
     int m_vaccines;
     int m_landmines;
     int m_flamethrowerCharges;
+    void deployFlames();
+    void deployLandmine();
+    void useVaccine();
 };
 
 class Citizen: public Human {
@@ -72,9 +74,7 @@ public:
     Zombie(int startX, int startY, StudentWorld* sw);
     virtual void doSomething();
     virtual bool blocksMovement() const;
-    virtual bool canBeInfected() const; // by vomit
     virtual bool canBeDamaged() const; // by flame
-    virtual bool blocksFlames() const;
     virtual bool canFall() const;
 private:
     unsigned long m_ticks;
@@ -98,20 +98,14 @@ public:
     Wall(int x, int y, StudentWorld* sw);
     virtual void doSomething();
     virtual bool blocksMovement() const;
-    virtual bool canBeInfected() const;
-    virtual bool canBeDamaged() const;
     virtual bool blocksFlames() const;
-    virtual bool canFall() const;
 private:
 };
 
 class FallIntoObject: public Actor {
 public:
     FallIntoObject(int imageID, int x, int y, int depth, StudentWorld* sw);
-    virtual bool blocksMovement() const;
-    virtual bool canBeInfected() const;
-    virtual bool canBeDamaged() const;
-    virtual bool canFall() const;
+private:
 };
 
 class Exit: public FallIntoObject {
@@ -126,18 +120,13 @@ class Pit: public FallIntoObject {
 public:
     Pit(int x, int y, StudentWorld* sw);
     virtual void doSomething();
-    virtual bool blocksFlames() const;
 };
 
 class Goodie: public Actor {
 public:
     Goodie(int imageID, int x, int y, StudentWorld* sw);
     virtual void doSomething();
-    virtual bool blocksMovement() const;
-    virtual bool canBeInfected() const; // by vomit
     virtual bool canBeDamaged() const; // by flame
-    virtual bool blocksFlames() const;
-    virtual bool canFall() const;
 private:
     virtual void giveSpecializedGoodie() = 0;
 };
@@ -167,11 +156,6 @@ class Projectile: public Actor {
 public:
     Projectile(int imageID, int x, int y, Direction dir, StudentWorld* sw);
     virtual void doSomething();
-    virtual bool blocksMovement() const;
-    virtual bool canBeInfected() const; // by vomit
-    virtual bool canBeDamaged() const; // by flame
-    virtual bool blocksFlames() const;
-    virtual bool canFall() const;
 private:
     int m_ticks;
     virtual void inflictSpecializedDamage() = 0;

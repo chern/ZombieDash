@@ -24,6 +24,26 @@ StudentWorld* Actor::getStudentWorld() const {
     return m_studentWorld;
 }
 
+bool Actor::blocksMovement() const {
+    return false;
+}
+
+bool Actor::canBeInfected() const {
+    return false;
+}
+
+bool Actor::canBeDamaged() const {
+    return false;
+}
+
+bool Actor::blocksFlames() const {
+    return false;
+}
+
+bool Actor::canFall() const {
+    return false;
+}
+
 // HUMAN
 Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {
     m_infected = false;
@@ -40,10 +60,6 @@ bool Human::canBeInfected() const {
 
 bool Human::canBeDamaged() const {
     return true;
-}
-
-bool Human::blocksFlames() const {
-    return false;
 }
 
 bool Human::canFall() const {
@@ -157,6 +173,27 @@ void Penelope::addFlamethrowerCharges(int num) {
     m_flamethrowerCharges += num;
 }
 
+void Penelope::deployFlames() {
+    if (m_flamethrowerCharges <= 0)
+        return; // do nothing
+    m_flamethrowerCharges--;
+    
+}
+
+void Penelope::deployLandmine() {
+    if (m_landmines <= 0)
+        return; // do nothing
+    m_landmines--;
+    
+}
+
+void Penelope::useVaccine() {
+    if (m_vaccines <= 0)
+        return; // do nothing
+    m_vaccines --;
+    
+}
+
 // CITIZEN
 Citizen::Citizen(int startX, int startY, StudentWorld* sw): Human(IID_CITIZEN, startX, startY, sw) {
     m_ticks = 0;
@@ -202,16 +239,8 @@ bool Zombie::blocksMovement() const {
     return true;
 }
 
-bool Zombie::canBeInfected() const {
-    return false;
-}
-
 bool Zombie::canBeDamaged() const {
     return true;
-}
-
-bool Zombie::blocksFlames() const {
-    return false;
 }
 
 bool Zombie::canFall() const {
@@ -235,40 +264,12 @@ bool Wall::blocksMovement() const {
     return true;
 }
 
-bool Wall::canBeInfected() const {
-    return false;
-}
-
-bool Wall::canBeDamaged() const {
-    return false;
-}
-
 bool Wall::blocksFlames() const {
     return true;
 }
 
-bool Wall::canFall() const {
-    return false;
-}
-
 // FALL INTO OBJECT
 FallIntoObject::FallIntoObject(int imageID, int x, int y, int depth, StudentWorld* sw): Actor(imageID, x, y, right, depth, sw) {}
-
-bool FallIntoObject::blocksMovement() const {
-    return false;
-}
-
-bool FallIntoObject::canBeInfected() const {
-    return false;
-}
-
-bool FallIntoObject::canBeDamaged() const {
-    return false;
-}
-
-bool FallIntoObject::canFall() const {
-    return false;
-}
 
 // EXIT
 Exit::Exit(int x, int y, StudentWorld* sw): FallIntoObject(IID_EXIT, x, y, 1, sw) {}
@@ -295,10 +296,6 @@ void Pit::doSomething() {
     return;
 }
 
-bool Pit::blocksFlames() const {
-    return false;
-}
-
 // GOODIE
 Goodie::Goodie(int imageID, int x, int y, StudentWorld* sw): Actor(imageID, x, y, right, 1, sw) {}
 
@@ -313,24 +310,8 @@ void Goodie::doSomething() {
     }
 }
 
-bool Goodie::blocksMovement() const {
-    return false;
-}
-
-bool Goodie::canBeInfected() const {
-    return false;
-}
-
 bool Goodie::canBeDamaged() const {
     return true;
-}
-
-bool Goodie::blocksFlames() const {
-    return false;
-}
-
-bool Goodie::canFall() const {
-    return false;
 }
 
 // VACCINE GOODIE
@@ -368,26 +349,6 @@ void Projectile::doSomething() {
         return;
     }
     inflictSpecializedDamage();
-}
-
-bool Projectile::blocksMovement() const {
-    return false;
-}
-
-bool Projectile::canBeInfected() const {
-    return false;
-}
-
-bool Projectile::canBeDamaged() const {
-    return false;
-}
-
-bool Projectile::blocksFlames() const {
-    return false;
-}
-
-bool Projectile::canFall() const {
-    return false;
 }
 
 // FLAME
