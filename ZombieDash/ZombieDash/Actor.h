@@ -25,6 +25,7 @@ public:
     virtual bool canFall() const;
 protected:
     bool infected() const;
+    void vaccinate();
 private:
     StudentWorld* m_studentWorld;
     bool m_alive;

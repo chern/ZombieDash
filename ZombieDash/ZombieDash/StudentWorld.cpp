@@ -185,7 +185,16 @@ void StudentWorld::inflictFlameDamageAround(int x, int y) {
 }
 
 void StudentWorld::inflictVomitDamageAround(int x, int y) {
-    
+    list<Actor*>::iterator actorsIter = m_actors.begin();
+    while (actorsIter != m_actors.end()) {
+        Actor* a = *actorsIter;
+        if (a->canBeInfected()) {
+            if (overlapsWith(x, y, a->getX(), a->getY())) {
+                a->infect();
+            }
+        }
+        actorsIter++;
+    }
 }
 
 void StudentWorld::loadLevel() {

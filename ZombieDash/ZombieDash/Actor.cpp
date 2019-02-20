@@ -62,6 +62,11 @@ bool Actor::infected() const {
     return m_infected;
 }
 
+void Actor::vaccinate() {
+    m_infected = false;
+    m_infections = 0;
+}
+
 // HUMAN
 Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {}
 
@@ -131,19 +136,19 @@ void Penelope::doSomething() {
             case KEY_PRESS_SPACE:
                 // add flames in front of Penelope
                 if (m_flamethrowerCharges > 0) {
-                    
+                    deployFlames();
                 }
                 break;
             case KEY_PRESS_TAB:
                 // landmines
                 if (m_landmines > 0) {
-                    
+                    deployLandmine();
                 }
                 break;
             case KEY_PRESS_ENTER:
                 // vaccinate
                 if (m_vaccines > 0) {
-                    
+                    useVaccine();
                 }
                 break;
         }
@@ -191,8 +196,8 @@ void Penelope::deployLandmine() {
 void Penelope::useVaccine() {
     if (m_vaccines <= 0)
         return; // do nothing
-    m_vaccines --;
-    
+    m_vaccines--;
+    vaccinate();
 }
 
 // CITIZEN
