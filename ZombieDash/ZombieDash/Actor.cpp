@@ -10,6 +10,8 @@
 Actor::Actor(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw): GraphObject(imageID, startX, startY, startDir, depth) {
     m_studentWorld = sw;
     m_alive = true;
+    m_infected = false;
+    m_infections = 0;
 }
 
 bool Actor::alive() const {
@@ -44,11 +46,24 @@ bool Actor::canFall() const {
     return false;
 }
 
-// HUMAN
-Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {
-    m_infected = false;
-    m_infections = 0;
+int Actor::infections() const {
+    return m_infections;
 }
+
+void Actor::infect() {
+    if (canBeInfected()) {
+        if (!m_infected)
+            m_infected = true;
+        m_infections++;
+    }
+}
+
+bool Actor::infected() const {
+    return m_infected;
+}
+
+// HUMAN
+Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {}
 
 bool Human::blocksMovement() const {
     return true;
@@ -64,20 +79,6 @@ bool Human::canBeDamaged() const {
 
 bool Human::canFall() const {
     return true;
-}
-
-bool Human::infected() const {
-    return m_infected;
-}
-
-int Human::infections() const {
-    return m_infections;
-}
-
-void Human::infect() {
-    if (m_infections == 0)
-        m_infected = true;
-    m_infections++;
 }
 
 // PENELOPE

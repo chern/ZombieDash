@@ -16,14 +16,20 @@ public:
     bool alive() const;
     StudentWorld* getStudentWorld() const;
     void setDead();
+    int infections() const;
+    void infect();
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const; // by vomit
     virtual bool canBeDamaged() const; // by flame
     virtual bool blocksFlames() const;
     virtual bool canFall() const;
+protected:
+    bool infected() const;
 private:
-    bool m_alive;
     StudentWorld* m_studentWorld;
+    bool m_alive;
+    bool m_infected;
+    int m_infections;
 };
 
 class Human: public Actor {
@@ -33,13 +39,8 @@ public:
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
     virtual bool canFall() const;
-    bool infected() const;
-    int infections() const;
-    void infect();
     // uninfect?
 private:
-    bool m_infected;
-    int m_infections;
 };
 
 class Penelope: public Human {
