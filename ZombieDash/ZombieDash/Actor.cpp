@@ -183,7 +183,8 @@ void Penelope::deployFlames() {
     if (m_flamethrowerCharges <= 0)
         return; // do nothing
     m_flamethrowerCharges--;
-    
+    getStudentWorld()->playSound(SOUND_PLAYER_FIRE);
+    getStudentWorld()->addFlames(3, getX(), getY(), getDirection());
 }
 
 void Penelope::deployLandmine() {
@@ -299,6 +300,7 @@ bool Exit::blocksFlames() const {
 Pit::Pit(int x, int y, StudentWorld* sw): FallIntoObject(IID_PIT, x, y, 0, sw) {}
 
 void Pit::doSomething() {
+    // if person/zombie overlaps it, destroy it as though it were damaged by a flame
     return;
 }
 

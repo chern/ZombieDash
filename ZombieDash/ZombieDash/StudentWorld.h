@@ -27,6 +27,7 @@ public:
     void addLandminesToPlayer(int num);
     void inflictFlameDamageAround(int x, int y);
     void inflictVomitDamageAround(int x, int y);
+    void addFlames(int num, int originalX, int originalY, Direction d);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;
@@ -35,6 +36,7 @@ private:
     bool m_levelFinished;
     void loadLevel();
     bool overlapsWith(int x1, int y1, int x2, int y2) const;
+    bool overlapsWithFlameBlockingObject(int x, int y) const;
 };
 
 #endif // STUDENTWORLD_H_

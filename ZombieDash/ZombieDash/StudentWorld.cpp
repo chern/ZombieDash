@@ -5,7 +5,7 @@
 #include "Level.h"
 #include <iostream> // defines the overloads of the << operator
 #include <sstream>  // defines the type std::ostringstream
-#include <iomanip>  // defines the manipulator setw
+#include <iomanip>  // defines the manipulator setw()
 #include <string>
 #include <cmath>
 #include <list>
@@ -195,6 +195,50 @@ void StudentWorld::inflictVomitDamageAround(int x, int y) {
         }
         actorsIter++;
     }
+}
+
+void StudentWorld::addFlames(int num, int originalX, int originalY, Direction dir) {
+    bool continuePlacingFlames = true; // if flames encounter a wall
+    for (int i = 1; i <= num; i++) {
+        int flameX = originalX;
+        int flameY = originalY;
+        switch (dir) {
+            case Actor::up:
+                flameY = originalY + (i * SPRITE_HEIGHT);
+                break;
+            case Actor::down:
+                flameY = originalY - (i * SPRITE_HEIGHT);
+                break;
+            case Actor::left:
+                flameX = originalX - (i * SPRITE_WIDTH);
+                break;
+            case Actor::right:
+                flameX = originalX + (i * SPRITE_WIDTH);
+                break;
+            default:
+                break;
+        }
+        if (continuePlacingFlames && !overlapsWithFlameBlockingObject(flameX, flameY))
+            m_actors.emplace_back(new Flame(flameX, flameY, dir, this));
+        else {
+            continuePlacingFlames = false;
+            break;
+        }
+    }
+}
+
+// loop through actors, check if any items that block flames are at (x, y)
+bool StudentWorld::overlapsWithFlameBlockingObject(int x, int y) const {
+    list<Actor*>::const_iterator actorsIter = m_actors.begin();
+    while (actorsIter != m_actors.end()) {
+        Actor* a = *actorsIter;
+        if (a->blocksFlames()) {
+            if (overlapsWith(x, y, a->getX(), a->getY()))
+                return true;
+        }
+        actorsIter++;
+    }
+    return false;
 }
 
 void StudentWorld::loadLevel() {
