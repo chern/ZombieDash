@@ -31,6 +31,7 @@ public:
     void addFlames(int num, int originalX, int originalY, Direction d);
     void addFlamesAround(int x, int y);
     void addLandmine(int x, int y);
+    void addPit(int x, int y);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;

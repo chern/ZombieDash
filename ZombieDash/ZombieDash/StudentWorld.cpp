@@ -266,6 +266,10 @@ void StudentWorld::addLandmine(int x, int y) {
     m_actors.emplace_back(new Landmine(x, y, this));
 }
 
+void StudentWorld::addPit(int x, int y) {
+    m_actors.emplace_back(new Pit(x, y, this));
+}
+
 // loop through actors, check if any items that block flames are at (x, y)
 bool StudentWorld::overlapsWithFlameBlockingObject(int x, int y) const {
     list<Actor*>::const_iterator actorsIter = m_actors.begin();

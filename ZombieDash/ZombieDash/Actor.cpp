@@ -406,7 +406,7 @@ void Landmine::doSomething() {
         setDead();
         getStudentWorld()->playSound(SOUND_LANDMINE_EXPLODE);
         getStudentWorld()->addFlamesAround(getX(), getY());
-        // TODO: introduce pit object at same x,y
+        getStudentWorld()->addPit(getX(), getY());
     }
 }
 
