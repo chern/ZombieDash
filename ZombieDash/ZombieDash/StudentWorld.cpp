@@ -310,6 +310,8 @@ int StudentWorld::loadLevel() {
                 int gameY = fileY * SPRITE_HEIGHT;
                 switch (ge) {
                     case Level::player:
+                        delete m_player;
+                        m_player = nullptr;
                         m_player = new Penelope(gameX, gameY, this);
                         cout <<"Location (" << fileX << "," << fileY << ") is where Penelope starts" << endl;
                         break;
