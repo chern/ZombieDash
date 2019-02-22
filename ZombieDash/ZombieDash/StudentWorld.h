@@ -38,7 +38,7 @@ private:
     int m_citizens;
     int m_zombies;
     bool m_levelFinished;
-    void loadLevel();
+    int loadLevel();
     bool overlapsWith(int x1, int y1, int x2, int y2) const;
     bool overlapsWithFlameBlockingObject(int x, int y) const;
 };

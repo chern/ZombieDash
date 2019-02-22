@@ -29,12 +29,11 @@ StudentWorld::~StudentWorld() {
 }
 
 int StudentWorld::init() {
-    loadLevel();
     m_citizens = 0;
     m_zombies = 0;
     m_levelFinished = false;
     
-    return GWSTATUS_CONTINUE_GAME;
+    return loadLevel();
 }
 
 int StudentWorld::move() {
@@ -284,7 +283,7 @@ bool StudentWorld::overlapsWithFlameBlockingObject(int x, int y) const {
     return false;
 }
 
-void StudentWorld::loadLevel() {
+int StudentWorld::loadLevel() {
     Level lev(assetPath());
     
     ostringstream oss;
@@ -295,11 +294,13 @@ void StudentWorld::loadLevel() {
     
     // string levelFile = "level01.txt";
     Level::LoadResult result = lev.loadLevel(levelFile);
-    if (result == Level::load_fail_file_not_found)
+    if (getLevel() > 99 || result == Level::load_fail_file_not_found) {
         cerr << "Cannot find " << levelFile << " data file" << endl;
-    else if (result == Level::load_fail_bad_format)
+        return GWSTATUS_PLAYER_WON;
+    } else if (result == Level::load_fail_bad_format) {
         cerr << levelFile << " is improperly formatted" << endl;
-    else if (result == Level::load_success) {
+        return GWSTATUS_LEVEL_ERROR;
+    } else if (result == Level::load_success) {
         cout << "Successfully loaded " << levelFile << endl;
         
         for (int fileX = 0; fileX < LEVEL_WIDTH; fileX++) {
@@ -357,5 +358,6 @@ void StudentWorld::loadLevel() {
             }
         }
     }
+    return GWSTATUS_CONTINUE_GAME;
 }
 
