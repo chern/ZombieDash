@@ -294,13 +294,13 @@ FallIntoObject::FallIntoObject(int imageID, int x, int y, int depth, StudentWorl
 Exit::Exit(int x, int y, StudentWorld* sw): FallIntoObject(IID_EXIT, x, y, 1, sw) {}
 
 void Exit::doSomething() {
-    // 1. Determine if exit overlaps with a citizen
+    // TODO: 1. Determine if exit overlaps with a citizen
     
     
     // 2. Determine if exit overlaps with Penelope AND there are no citizens left
     if (getStudentWorld()->overlapsWithPlayer(getX(), getY()) && getStudentWorld()->citizensRemaining() == 0) {
         getStudentWorld()->playSound(SOUND_LEVEL_FINISHED);
-        getStudentWorld()->playSound(SOUND_CITIZEN_SAVED);
+        // getStudentWorld()->playSound(SOUND_CITIZEN_SAVED);
         getStudentWorld()->finishLevel();
     }
 }
