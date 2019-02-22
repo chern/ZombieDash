@@ -108,8 +108,8 @@ void StudentWorld::cleanUp() {
 }
 
 bool StudentWorld::canMoveTo(int x, int y) const {
-    list<Actor*>::const_iterator actorsIter = m_actors.begin();
-    while (actorsIter != m_actors.end()) {
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
         if (a->blocksMovement()) {
             for (int callerX = x; callerX < x + SPRITE_WIDTH; callerX++) {
@@ -138,7 +138,7 @@ bool StudentWorld::overlapsWith(int x1, int y1, int x2, int y2) const {
     double deltaX = abs(centerX2 - centerX1);
     double deltaY = abs(centerY2 - centerY1);
     
-    if (pow(deltaX, 2) + pow(deltaY, 2) <= pow(10, 2))
+    if ((pow(deltaX, 2) + pow(deltaY, 2)) <= pow(10, 2))
         return true;
     return false;
 }
@@ -148,8 +148,8 @@ bool StudentWorld::overlapsWithPlayer(int x, int y) const {
 }
 
 bool StudentWorld::overlapsWithOrganism(int x, int y) const {
-    list<Actor*>::const_iterator actorsIter = m_actors.begin();
-    for (; actorsIter != m_actors.end(); actorsIter++) {
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    for (; actorsIter != m_actors.cend(); actorsIter++) {
         Actor* a = *actorsIter;
         if (a->canSetOffLandmine() && overlapsWith(x, y, a->getX(), a->getY()))
             return true;
@@ -272,8 +272,8 @@ void StudentWorld::addPit(int x, int y) {
 
 // loop through actors, check if any items that block flames are at (x, y)
 bool StudentWorld::overlapsWithFlameBlockingObject(int x, int y) const {
-    list<Actor*>::const_iterator actorsIter = m_actors.begin();
-    while (actorsIter != m_actors.end()) {
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
         if (a->blocksFlames()) {
             if (overlapsWith(x, y, a->getX(), a->getY()))
