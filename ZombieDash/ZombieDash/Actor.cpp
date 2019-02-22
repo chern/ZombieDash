@@ -46,6 +46,10 @@ bool Actor::canFall() const {
     return false;
 }
 
+bool Actor::canSetOffLandmine() const {
+    return false;
+}
+
 int Actor::infections() const {
     return m_infections;
 }
@@ -83,6 +87,10 @@ bool Human::canBeDamaged() const {
 }
 
 bool Human::canFall() const {
+    return true;
+}
+
+bool Human::canSetOffLandmine() const {
     return true;
 }
 
@@ -191,7 +199,7 @@ void Penelope::deployLandmine() {
     if (m_landmines <= 0)
         return; // do nothing
     m_landmines--;
-    
+    getStudentWorld()->addLandmine(getX(), getY());
 }
 
 void Penelope::useVaccine() {
@@ -254,6 +262,10 @@ bool Zombie::canFall() const {
     return true;
 }
 
+bool Zombie::canSetOffLandmine() const {
+    return true;
+}
+
 // DUMB ZOMBIE
 DumbZombie::DumbZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
 
@@ -288,6 +300,7 @@ void Exit::doSomething() {
     // 2. Determine if exit overlaps with Penelope AND there are no citizens left
     if (getStudentWorld()->overlapsWithPlayer(getX(), getY()) && getStudentWorld()->citizensRemaining() == 0) {
         getStudentWorld()->playSound(SOUND_LEVEL_FINISHED);
+        getStudentWorld()->playSound(SOUND_CITIZEN_SAVED);
         getStudentWorld()->finishLevel();
     }
 }
@@ -333,7 +346,7 @@ void VaccineGoodie::giveSpecializedGoodie() {
 GasCanGoodie::GasCanGoodie(int x, int y, StudentWorld* sw): Goodie(IID_GAS_CAN_GOODIE, x, y, sw) {}
 
 void GasCanGoodie::giveSpecializedGoodie() {
-    getStudentWorld()->addFlamethrowerChargersToPlayer(5);
+    getStudentWorld()->addFlamethrowerChargesToPlayer(5);
 }
 
 // LANDMINE GOODIE
@@ -371,4 +384,32 @@ Vomit::Vomit(int x, int y, Direction dir, StudentWorld* sw): Projectile(IID_VOMI
 
 void Vomit::inflictSpecializedDamage() {
     getStudentWorld()->inflictVomitDamageAround(getX(), getY());
+}
+
+// LANDMINE
+Landmine::Landmine(int x, int y, StudentWorld* sw): Actor(IID_LANDMINE, x, y, right, 1, sw) {
+    m_safetyTicks = 30;
+    m_active = false;
+}
+
+void Landmine::doSomething() {
+    if (!alive())
+        return;
+    if (!m_active) {
+        m_safetyTicks--;
+        if (m_safetyTicks <= 0)
+            m_active = true;
+        return;
+    }
+    // must determine if landmine overlaps with a citizen, Penelope, or zombie
+    if (getStudentWorld()->overlapsWithOrganism(getX(), getY())) {
+        setDead();
+        getStudentWorld()->playSound(SOUND_LANDMINE_EXPLODE);
+        getStudentWorld()->addFlamesAround(getX(), getY());
+        // TODO: introduce pit object at same x,y
+    }
+}
+
+bool Landmine::canBeDamaged() const {
+    return true;
 }

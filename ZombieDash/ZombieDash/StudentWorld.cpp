@@ -147,6 +147,17 @@ bool StudentWorld::overlapsWithPlayer(int x, int y) const {
     return overlapsWith(x, y, m_player->getX(), m_player->getY());
 }
 
+bool StudentWorld::overlapsWithOrganism(int x, int y) const {
+    list<Actor*>::const_iterator actorsIter = m_actors.begin();
+    for (; actorsIter != m_actors.end(); actorsIter++) {
+        Actor* a = *actorsIter;
+        if (a->canSetOffLandmine() && overlapsWith(x, y, a->getX(), a->getY()))
+            return true;
+        // only organisms (citizens, Penelope, zombies) can set off landmines
+    }
+    return false;
+}
+
 int StudentWorld::citizensRemaining() const {
     return m_citizens;
 }
@@ -163,7 +174,7 @@ void StudentWorld::addVaccinesToPlayer(int num) {
     m_player->addVaccines(num);
 }
 
-void StudentWorld::addFlamethrowerChargersToPlayer(int num) {
+void StudentWorld::addFlamethrowerChargesToPlayer(int num) {
     m_player->addFlamethrowerCharges(num);
 }
 
@@ -172,6 +183,10 @@ void StudentWorld::addLandminesToPlayer(int num) {
 }
 
 void StudentWorld::inflictFlameDamageAround(int x, int y) {
+    if (overlapsWithPlayer(x, y)) {
+        m_player->setDead();
+        playSound(SOUND_PLAYER_DIE);
+    }
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
         Actor* a = *actorsIter;
@@ -185,6 +200,8 @@ void StudentWorld::inflictFlameDamageAround(int x, int y) {
 }
 
 void StudentWorld::inflictVomitDamageAround(int x, int y) {
+    if (overlapsWithPlayer(x, y))
+        m_player->infect();
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
         Actor* a = *actorsIter;
@@ -199,7 +216,7 @@ void StudentWorld::inflictVomitDamageAround(int x, int y) {
 
 void StudentWorld::addFlames(int num, int originalX, int originalY, Direction dir) {
     bool continuePlacingFlames = true; // if flames encounter a wall
-    for (int i = 1; i <= num; i++) {
+    for (int i = 1; continuePlacingFlames && i <= num; i++) {
         int flameX = originalX;
         int flameY = originalY;
         switch (dir) {
@@ -220,11 +237,33 @@ void StudentWorld::addFlames(int num, int originalX, int originalY, Direction di
         }
         if (continuePlacingFlames && !overlapsWithFlameBlockingObject(flameX, flameY))
             m_actors.emplace_back(new Flame(flameX, flameY, dir, this));
-        else {
+        else
             continuePlacingFlames = false;
-            break;
-        }
     }
+}
+
+void StudentWorld::addFlamesAround(int x, int y) {
+    m_actors.emplace_back(new Flame(x, y, Actor::right, this));
+    // north
+    m_actors.emplace_back(new Flame(x, y + SPRITE_HEIGHT, Actor:: right, this));
+    // northeast
+    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::right, this));
+    // east
+    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y, Actor::right, this));
+    // southeast
+    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::right, this));
+    // south
+    m_actors.emplace_back(new Flame(x, y - SPRITE_HEIGHT, Actor::right, this));
+    // southwest
+    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::right, this));
+    // west
+    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y, Actor::right, this));
+    // northwest
+    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::right, this));
+}
+
+void StudentWorld::addLandmine(int x, int y) {
+    m_actors.emplace_back(new Landmine(x, y, this));
 }
 
 // loop through actors, check if any items that block flames are at (x, y)

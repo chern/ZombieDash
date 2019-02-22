@@ -19,15 +19,18 @@ public:
     virtual void cleanUp();
     bool canMoveTo(int x, int y) const;
     bool overlapsWithPlayer(int x, int y) const;
+    bool overlapsWithOrganism(int x, int y) const;
     int citizensRemaining() const;
     int zombiesRemaining() const;
     void finishLevel();
     void addVaccinesToPlayer(int num);
-    void addFlamethrowerChargersToPlayer(int num);
+    void addFlamethrowerChargesToPlayer(int num);
     void addLandminesToPlayer(int num);
     void inflictFlameDamageAround(int x, int y);
     void inflictVomitDamageAround(int x, int y);
     void addFlames(int num, int originalX, int originalY, Direction d);
+    void addFlamesAround(int x, int y);
+    void addLandmine(int x, int y);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;

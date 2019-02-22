@@ -23,6 +23,7 @@ public:
     virtual bool canBeDamaged() const; // by flame
     virtual bool blocksFlames() const;
     virtual bool canFall() const;
+    virtual bool canSetOffLandmine() const;
 protected:
     bool infected() const;
     void vaccinate();
@@ -40,7 +41,7 @@ public:
     virtual bool canBeInfected() const;
     virtual bool canBeDamaged() const;
     virtual bool canFall() const;
-    // uninfect?
+    virtual bool canSetOffLandmine() const;
 private:
 };
 
@@ -78,6 +79,7 @@ public:
     virtual bool blocksMovement() const;
     virtual bool canBeDamaged() const; // by flame
     virtual bool canFall() const;
+    virtual bool canSetOffLandmine() const;
 private:
     unsigned long m_ticks;
     int m_movementPlanDistance;
@@ -175,6 +177,16 @@ public:
     Vomit(int x, int y, Direction dir, StudentWorld* sw);
 private:
     virtual void inflictSpecializedDamage();
+};
+
+class Landmine: public Actor {
+public:
+    Landmine(int x, int y, StudentWorld* sw);
+    virtual void doSomething();
+    virtual bool canBeDamaged() const;
+private:
+    int m_safetyTicks;
+    bool m_active;
 };
 
 #endif // ACTOR_H_
