@@ -189,10 +189,10 @@ void StudentWorld::inflictFlameDamageAround(int x, int y) {
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
         Actor* a = *actorsIter;
-        if (a->canBeDamaged()) {
-            if (overlapsWith(x, y, a->getX(), a->getY())) {
+        if (a->canBeDamaged() && overlapsWith(x, y, a->getX(), a->getY())) {
                 a->setDead();
-            }
+                if (a->canBeDetonated())
+                    static_cast<Landmine*>(a)->detonate();
         }
         actorsIter++;
     }
@@ -204,10 +204,8 @@ void StudentWorld::inflictVomitDamageAround(int x, int y) {
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
         Actor* a = *actorsIter;
-        if (a->canBeInfected()) {
-            if (overlapsWith(x, y, a->getX(), a->getY())) {
-                a->infect();
-            }
+        if (a->canBeInfected() && overlapsWith(x, y, a->getX(), a->getY())) {
+            static_cast<Human*>(a)->infect();
         }
         actorsIter++;
     }

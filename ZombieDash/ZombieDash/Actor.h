@@ -14,24 +14,19 @@ public:
     Actor(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw);
     virtual void doSomething() = 0;
     bool alive() const;
-    StudentWorld* getStudentWorld() const;
     void setDead();
-    int infections() const;
-    void infect();
+    StudentWorld* getStudentWorld() const;
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const; // by vomit
     virtual bool canBeDamaged() const; // by flame
     virtual bool blocksFlames() const;
     virtual bool canFall() const;
     virtual bool canSetOffLandmine() const;
+    virtual bool canBeDetonated() const;
 protected:
-    bool infected() const;
-    void vaccinate();
 private:
     StudentWorld* m_studentWorld;
     bool m_alive;
-    bool m_infected;
-    int m_infections;
 };
 
 class Human: public Actor {
@@ -42,7 +37,14 @@ public:
     virtual bool canBeDamaged() const;
     virtual bool canFall() const;
     virtual bool canSetOffLandmine() const;
+    int infections() const;
+    void infect();
+protected:
+    bool infected() const;
+    void vaccinate();
 private:
+    bool m_infected;
+    int m_infections;
 };
 
 class Penelope: public Human {
@@ -184,6 +186,8 @@ public:
     Landmine(int x, int y, StudentWorld* sw);
     virtual void doSomething();
     virtual bool canBeDamaged() const;
+    virtual bool canBeDetonated() const;
+    void detonate();
 private:
     int m_safetyTicks;
     bool m_active;

@@ -10,8 +10,7 @@
 Actor::Actor(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw): GraphObject(imageID, startX, startY, startDir, depth) {
     m_studentWorld = sw;
     m_alive = true;
-    m_infected = false;
-    m_infections = 0;
+    
 }
 
 bool Actor::alive() const {
@@ -50,29 +49,15 @@ bool Actor::canSetOffLandmine() const {
     return false;
 }
 
-int Actor::infections() const {
-    return m_infections;
-}
-
-void Actor::infect() {
-    if (canBeInfected()) {
-        if (!m_infected)
-            m_infected = true;
-        m_infections++;
-    }
-}
-
-bool Actor::infected() const {
-    return m_infected;
-}
-
-void Actor::vaccinate() {
-    m_infected = false;
-    m_infections = 0;
+bool Actor::canBeDetonated() const {
+    return false;
 }
 
 // HUMAN
-Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {}
+Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {
+    m_infected = false;
+    m_infections = 0;
+}
 
 bool Human::blocksMovement() const {
     return true;
@@ -92,6 +77,25 @@ bool Human::canFall() const {
 
 bool Human::canSetOffLandmine() const {
     return true;
+}
+
+int Human::infections() const {
+    return m_infections;
+}
+
+void Human::infect() {
+    if (!m_infected)
+        m_infected = true;
+    m_infections++;
+}
+
+bool Human::infected() const {
+    return m_infected;
+}
+
+void Human::vaccinate() {
+    m_infected = false;
+    m_infections = 0;
 }
 
 // PENELOPE
@@ -403,13 +407,21 @@ void Landmine::doSomething() {
     }
     // must determine if landmine overlaps with a citizen, Penelope, or zombie
     if (getStudentWorld()->overlapsWithOrganism(getX(), getY())) {
-        setDead();
-        getStudentWorld()->playSound(SOUND_LANDMINE_EXPLODE);
-        getStudentWorld()->addFlamesAround(getX(), getY());
-        getStudentWorld()->addPit(getX(), getY());
+        detonate();
     }
 }
 
 bool Landmine::canBeDamaged() const {
     return true;
+}
+
+bool Landmine::canBeDetonated() const {
+    return true;
+}
+
+void Landmine::detonate() {
+    setDead();
+    getStudentWorld()->playSound(SOUND_LANDMINE_EXPLODE);
+    getStudentWorld()->addFlamesAround(getX(), getY());
+    getStudentWorld()->addPit(getX(), getY());
 }
