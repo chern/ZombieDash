@@ -83,28 +83,28 @@ public:
     virtual bool canFall() const;
     virtual bool canSetOffLandmine() const;
 protected:
-    void setMovementPlanDistance(int m);
+    void setMovementPlanDistance(int mv);
     int movementPlanDistance() const;
 private:
-    unsigned long m_ticks;
+    bool m_paralyzed;
     int m_movementPlanDistance;
     void computeVomitCoordinates(int& vx, int& vy);
-    void determineDestinationCoordinates(int& destX, int& destY);
-    virtual void determineNewMovementPlanDistanceAndDirection() = 0;
+    void computeDestinationCoordinates(int& destX, int& destY);
+    virtual void determineNewMovementPlan() = 0;
 };
 
 class DumbZombie: public Zombie {
 public:
     DumbZombie(int startX, int startY, StudentWorld* sw);
 private:
-    virtual void determineNewMovementPlanDistanceAndDirection();
+    virtual void determineNewMovementPlan();
 };
 
 class SmartZombie: public Zombie {
 public:
     SmartZombie(int startX, int startY, StudentWorld* sw);
 private:
-    virtual void determineNewMovementPlanDistanceAndDirection();
+    virtual void determineNewMovementPlan();
 };
 
 class Wall: public Actor {

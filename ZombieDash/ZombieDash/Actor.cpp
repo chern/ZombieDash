@@ -124,25 +124,25 @@ void Penelope::doSomething() {
             case KEY_PRESS_LEFT:
                 // move Penelope to the left
                 setDirection(left);
-                if (getStudentWorld()->canMoveTo(getX()-4, getY()))
+                if (getStudentWorld()->playerCanMoveTo(getX()-4, getY()))
                     moveTo(getX()-4, getY());
                 break;
             case KEY_PRESS_RIGHT:
                 // move Penelope to the right
                 setDirection(right);
-                if (getStudentWorld()->canMoveTo(getX()+4, getY()))
+                if (getStudentWorld()->playerCanMoveTo(getX()+4, getY()))
                     moveTo(getX()+4, getY());
                 break;
             case KEY_PRESS_UP:
                 // move Penelope up
                 setDirection(up);
-                if (getStudentWorld()->canMoveTo(getX(), getY()+4))
+                if (getStudentWorld()->playerCanMoveTo(getX(), getY()+4))
                     moveTo(getX(), getY()+4);
                 break;
             case KEY_PRESS_DOWN:
                 // move Penelope down
                 setDirection(down);
-                if (getStudentWorld()->canMoveTo(getX(), getY()-4))
+                if (getStudentWorld()->playerCanMoveTo(getX(), getY()-4))
                     moveTo(getX(), getY()-4);
                 break;
             case KEY_PRESS_SPACE:
@@ -242,24 +242,26 @@ void Citizen::doSomething() {
 
 // ZOMBIE
 Zombie::Zombie(int startX, int startY, StudentWorld* sw): Actor(IID_ZOMBIE, startX, startY, right, 0, sw) {
-    m_ticks = 0;
+    m_paralyzed = false;
     m_movementPlanDistance = 0;
 }
 
 void Zombie::doSomething() {
-    m_ticks++;
     if (!alive())
         return;
-    if (m_ticks % 2 == 0)
+    if (m_paralyzed) {
+        m_paralyzed = false;
         return; // paralysis tick
+    } else {
+        m_paralyzed = true;
+    }
     
     // compute vomit coordinates
-    int vomitX = 0;
-    int vomitY = 0;
+    int vomitX = getX();
+    int vomitY = getY();
     computeVomitCoordinates(vomitX, vomitY);
-    
     // if vomit coordinates overlap with citizen or Penelope, 1/3 chance of vomiting
-    if (getStudentWorld()->overlapsWithPlayer(vomitX, vomitY) || getStudentWorld()->overlapsWithPlayer(vomitX, vomitY)) {
+    if (getStudentWorld()->overlapsWithPlayer(vomitX, vomitY) || getStudentWorld()->overlapsWithCitizen(vomitX, vomitY)) {
         int chance = randInt(1, 3);
         if (chance > 1) { // 1 in 3 chance of vomit
             getStudentWorld()->addVomit(vomitX, vomitY, getDirection());
@@ -269,12 +271,12 @@ void Zombie::doSomething() {
     }
     
     if (m_movementPlanDistance <= 0)
-        determineNewMovementPlanDistanceAndDirection();
+        determineNewMovementPlan();
     
-    int destX = 0;
-    int destY = 0;
-    determineDestinationCoordinates(destX, destY);
-    if (getStudentWorld()->canMoveTo(destX, destY)) {
+    int destX = getX();
+    int destY = getY();
+    computeDestinationCoordinates(destX, destY);
+    if (getStudentWorld()->organismCanMoveTo(getX(), getY(), destX, destY)) {
         moveTo(destX, destY);
         m_movementPlanDistance--;
     } else {
@@ -298,8 +300,8 @@ bool Zombie::canSetOffLandmine() const {
     return true;
 }
 
-void Zombie::setMovementPlanDistance(int m) {
-    m_movementPlanDistance = m;
+void Zombie::setMovementPlanDistance(int mv) {
+    m_movementPlanDistance = mv;
 }
 
 int Zombie::movementPlanDistance() const {
@@ -327,7 +329,7 @@ void Zombie::computeVomitCoordinates(int& vx, int& vy) {
     }
 }
 
-void Zombie::determineDestinationCoordinates(int& destX, int& destY) {
+void Zombie::computeDestinationCoordinates(int& destX, int& destY) {
     switch (getDirection()) {
         case up:
             destX = getX();
@@ -351,7 +353,7 @@ void Zombie::determineDestinationCoordinates(int& destX, int& destY) {
 // DUMB ZOMBIE
 DumbZombie::DumbZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
 
-void DumbZombie::determineNewMovementPlanDistanceAndDirection() {
+void DumbZombie::determineNewMovementPlan() {
     setMovementPlanDistance(randInt(3, 10));
     switch (randInt(1, 4)) {
         case 1:
@@ -372,7 +374,7 @@ void DumbZombie::determineNewMovementPlanDistanceAndDirection() {
 // SMART ZOMBIE
 SmartZombie::SmartZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
 
-void SmartZombie::determineNewMovementPlanDistanceAndDirection() {
+void SmartZombie::determineNewMovementPlan() {
     
 }
 

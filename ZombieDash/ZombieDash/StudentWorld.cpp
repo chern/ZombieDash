@@ -106,13 +106,35 @@ void StudentWorld::cleanUp() {
     m_zombies = 0;
 }
 
-bool StudentWorld::canMoveTo(int x, int y) const {
+bool StudentWorld::playerCanMoveTo(int x, int y) const {
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
         if (a->blocksMovement()) {
             for (int callerX = x; callerX < x + SPRITE_WIDTH; callerX++) {
                 for (int callerY = y; callerY < y + SPRITE_HEIGHT; callerY++) {
+                    for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
+                        for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
+                            if (callerX == actorX && callerY == actorY) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        actorsIter++;
+    }
+    return true;
+}
+
+bool StudentWorld::organismCanMoveTo(int actorX, int actorY, int destX, int destY) const {
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    while (actorsIter != m_actors.cend()) {
+        Actor* a = *actorsIter;
+        if (a->blocksMovement() && abs(actorX - destX) > SPRITE_WIDTH && abs(actorY - destY) > SPRITE_HEIGHT) {
+            for (int callerX = actorX; callerX < actorX + SPRITE_WIDTH; callerX++) {
+                for (int callerY = actorY; callerY < actorY + SPRITE_HEIGHT; callerY++) {
                     for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
                         for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
                             if (callerX == actorX && callerY == actorY) {
