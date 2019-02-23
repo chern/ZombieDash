@@ -53,29 +53,32 @@ bool Actor::canBeDetonated() const {
     return false;
 }
 
+// AGENT
+Agent::Agent(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {}
+
+bool Agent::blocksMovement() const {
+    return true;
+}
+
+bool Agent::canBeDamaged() const {
+    return true;
+}
+
+bool Agent::canFall() const {
+    return true;
+}
+
+bool Agent::canSetOffLandmine() const {
+    return true;
+}
+
 // HUMAN
-Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Actor(imageID, startX, startY, right, 0, sw) {
+Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Agent(imageID, startX, startY, sw) {
     m_infected = false;
     m_infections = 0;
 }
 
-bool Human::blocksMovement() const {
-    return true;
-}
-
 bool Human::canBeInfected() const {
-    return true;
-}
-
-bool Human::canBeDamaged() const {
-    return true;
-}
-
-bool Human::canFall() const {
-    return true;
-}
-
-bool Human::canSetOffLandmine() const {
     return true;
 }
 
@@ -241,7 +244,7 @@ void Citizen::doSomething() {
 }
 
 // ZOMBIE
-Zombie::Zombie(int startX, int startY, StudentWorld* sw): Actor(IID_ZOMBIE, startX, startY, right, 0, sw) {
+Zombie::Zombie(int startX, int startY, StudentWorld* sw): Agent(IID_ZOMBIE, startX, startY, sw) {
     m_paralyzed = false;
     m_movementPlanDistance = 0;
 }
@@ -282,22 +285,6 @@ void Zombie::doSomething() {
     } else {
         setMovementPlanDistance(0);
     }
-}
-
-bool Zombie::blocksMovement() const {
-    return true;
-}
-
-bool Zombie::canBeDamaged() const {
-    return true;
-}
-
-bool Zombie::canFall() const {
-    return true;
-}
-
-bool Zombie::canSetOffLandmine() const {
-    return true;
 }
 
 void Zombie::setMovementPlanDistance(int mv) {

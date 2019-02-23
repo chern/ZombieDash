@@ -29,14 +29,20 @@ private:
     bool m_alive;
 };
 
-class Human: public Actor {
+class Agent: public Actor {
 public:
-    Human(int imageID, int startX, int startY, StudentWorld* sw);
+    Agent(int imageID, int startX, int startY, StudentWorld* sw);
     virtual bool blocksMovement() const;
-    virtual bool canBeInfected() const;
-    virtual bool canBeDamaged() const;
+    virtual bool canBeDamaged() const; // by flame
     virtual bool canFall() const;
     virtual bool canSetOffLandmine() const;
+private:
+};
+
+class Human: public Agent {
+public:
+    Human(int imageID, int startX, int startY, StudentWorld* sw);
+    virtual bool canBeInfected() const;
     int infections() const;
     void infect();
 protected:
@@ -74,14 +80,10 @@ private:
     unsigned long m_ticks; // used for "paralysis ticks"
 };
 
-class Zombie: public Actor {
+class Zombie: public Agent {
 public:
     Zombie(int startX, int startY, StudentWorld* sw);
     virtual void doSomething();
-    virtual bool blocksMovement() const;
-    virtual bool canBeDamaged() const; // by flame
-    virtual bool canFall() const;
-    virtual bool canSetOffLandmine() const;
 protected:
     void setMovementPlanDistance(int mv);
     int movementPlanDistance() const;
