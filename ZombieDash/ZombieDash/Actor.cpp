@@ -218,11 +218,10 @@ void Penelope::useVaccine() {
 
 // CITIZEN
 Citizen::Citizen(int startX, int startY, StudentWorld* sw): Human(IID_CITIZEN, startX, startY, sw) {
-    m_ticks = 0;
+    m_paralyzed = false;
 }
 
 void Citizen::doSomething() {
-    m_ticks++;
     if(!alive())
         return;
     if (infected()) {
@@ -237,10 +236,14 @@ void Citizen::doSomething() {
             return;
         }
     }
-    if (m_ticks % 2 == 0)
+    if (m_paralyzed) {
+        m_paralyzed = false;
         return; // paralysis tick
-    // Citizen must determine its distance to Penelope
-    // Citizen must determine its distance to the nearest zombie
+    } else {
+        m_paralyzed = true;
+    }
+    // TODO: Citizen must determine its distance to Penelope
+    // TODO: Citizen must determine its distance to the nearest zombie
 }
 
 // ZOMBIE
@@ -279,7 +282,7 @@ void Zombie::doSomething() {
     int destX = getX();
     int destY = getY();
     computeDestinationCoordinates(destX, destY);
-    if (getStudentWorld()->organismCanMoveTo(getX(), getY(), destX, destY)) {
+    if (getStudentWorld()->agentCanMoveTo(this, destX, destY)) {
         moveTo(destX, destY);
         m_movementPlanDistance--;
     } else {

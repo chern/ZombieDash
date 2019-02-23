@@ -115,9 +115,8 @@ bool StudentWorld::playerCanMoveTo(int x, int y) const {
                 for (int callerY = y; callerY < y + SPRITE_HEIGHT; callerY++) {
                     for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
                         for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
-                            if (callerX == actorX && callerY == actorY) {
+                            if (callerX == actorX && callerY == actorY)
                                 return false;
-                            }
                         }
                     }
                 }
@@ -128,20 +127,15 @@ bool StudentWorld::playerCanMoveTo(int x, int y) const {
     return true;
 }
 
-bool StudentWorld::organismCanMoveTo(int actorX, int actorY, int destX, int destY) const {
+bool StudentWorld::agentCanMoveTo(Agent* ag, int destX, int destY) const {
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
-        if (a->blocksMovement() && abs(actorX - destX) > SPRITE_WIDTH && abs(actorY - destY) > SPRITE_HEIGHT) {
-            for (int callerX = actorX; callerX < actorX + SPRITE_WIDTH; callerX++) {
-                for (int callerY = actorY; callerY < actorY + SPRITE_HEIGHT; callerY++) {
-                    for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
-                        for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
-                            if (callerX == actorX && callerY == actorY) {
-                                return false;
-                            }
-                        }
-                    }
+        if (ag != a && a->blocksMovement()) {
+            for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
+                for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
+                    if (actorX == destX && actorY == destY)
+                        return false;
                 }
             }
         }

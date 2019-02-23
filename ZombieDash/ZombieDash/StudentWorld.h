@@ -18,7 +18,7 @@ public:
     virtual int move();
     virtual void cleanUp();
     bool playerCanMoveTo(int x, int y) const;
-    bool organismCanMoveTo(int actorX, int actorY, int destX, int destY) const;
+    bool agentCanMoveTo(Agent* ag, int destX, int destY) const;
     bool overlapsWithPlayer(int x, int y) const;
     bool overlapsWithCitizen(int x, int y) const;
     bool overlapsWithOrganism(int x, int y) const;

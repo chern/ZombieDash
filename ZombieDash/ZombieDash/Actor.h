@@ -77,7 +77,7 @@ public:
     Citizen(int startX, int startY, StudentWorld* sw);
     virtual void doSomething();
 private:
-    unsigned long m_ticks; // used for "paralysis ticks"
+    bool m_paralyzed; // used for "paralysis ticks"
 };
 
 class Zombie: public Agent {
