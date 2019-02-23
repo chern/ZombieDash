@@ -82,21 +82,29 @@ public:
     virtual bool canBeDamaged() const; // by flame
     virtual bool canFall() const;
     virtual bool canSetOffLandmine() const;
+protected:
+    void setMovementPlanDistance(int m);
+    int movementPlanDistance() const;
 private:
     unsigned long m_ticks;
     int m_movementPlanDistance;
+    void computeVomitCoordinates(int& vx, int& vy);
+    void determineDestinationCoordinates(int& destX, int& destY);
+    virtual void determineNewMovementPlanDistanceAndDirection() = 0;
 };
 
 class DumbZombie: public Zombie {
 public:
     DumbZombie(int startX, int startY, StudentWorld* sw);
 private:
+    virtual void determineNewMovementPlanDistanceAndDirection();
 };
 
 class SmartZombie: public Zombie {
 public:
     SmartZombie(int startX, int startY, StudentWorld* sw);
 private:
+    virtual void determineNewMovementPlanDistanceAndDirection();
 };
 
 class Wall: public Actor {

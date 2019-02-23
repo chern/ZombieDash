@@ -146,6 +146,17 @@ bool StudentWorld::overlapsWithPlayer(int x, int y) const {
     return overlapsWith(x, y, m_player->getX(), m_player->getY());
 }
 
+bool StudentWorld::overlapsWithCitizen(int x, int y) const {
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    for (; actorsIter != m_actors.cend(); actorsIter++) {
+        Actor* a = *actorsIter;
+        if (a->canBeInfected() && overlapsWith(x, y, a->getX(), a->getY()))
+            return true;
+        // only citizens (and Penelope) can be infected
+    }
+    return false;
+}
+
 bool StudentWorld::overlapsWithOrganism(int x, int y) const {
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     for (; actorsIter != m_actors.cend(); actorsIter++) {
@@ -265,6 +276,10 @@ void StudentWorld::addLandmine(int x, int y) {
 
 void StudentWorld::addPit(int x, int y) {
     m_actors.emplace_back(new Pit(x, y, this));
+}
+
+void StudentWorld::addVomit(int x, int y, Direction d) {
+    m_actors.emplace_back(new Vomit(x, y, d, this));
 }
 
 // loop through actors, check if any items that block flames are at (x, y)

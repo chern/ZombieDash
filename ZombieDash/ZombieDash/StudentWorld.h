@@ -19,6 +19,7 @@ public:
     virtual void cleanUp();
     bool canMoveTo(int x, int y) const;
     bool overlapsWithPlayer(int x, int y) const;
+    bool overlapsWithCitizen(int x, int y) const;
     bool overlapsWithOrganism(int x, int y) const;
     int citizensRemaining() const;
     int zombiesRemaining() const;
@@ -32,6 +33,7 @@ public:
     void addFlamesAround(int x, int y);
     void addLandmine(int x, int y);
     void addPit(int x, int y);
+    void addVomit(int x, int y, Direction d);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;

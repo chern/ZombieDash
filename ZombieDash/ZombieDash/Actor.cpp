@@ -252,6 +252,34 @@ void Zombie::doSomething() {
         return;
     if (m_ticks % 2 == 0)
         return; // paralysis tick
+    
+    // compute vomit coordinates
+    int vomitX = 0;
+    int vomitY = 0;
+    computeVomitCoordinates(vomitX, vomitY);
+    
+    // if vomit coordinates overlap with citizen or Penelope, 1/3 chance of vomiting
+    if (getStudentWorld()->overlapsWithPlayer(vomitX, vomitY) || getStudentWorld()->overlapsWithPlayer(vomitX, vomitY)) {
+        int chance = randInt(1, 3);
+        if (chance > 1) { // 1 in 3 chance of vomit
+            getStudentWorld()->addVomit(vomitX, vomitY, getDirection());
+            getStudentWorld()->playSound(SOUND_ZOMBIE_VOMIT);
+            return;
+        }
+    }
+    
+    if (m_movementPlanDistance <= 0)
+        determineNewMovementPlanDistanceAndDirection();
+    
+    int destX = 0;
+    int destY = 0;
+    determineDestinationCoordinates(destX, destY);
+    if (getStudentWorld()->canMoveTo(destX, destY)) {
+        moveTo(destX, destY);
+        m_movementPlanDistance--;
+    } else {
+        setMovementPlanDistance(0);
+    }
 }
 
 bool Zombie::blocksMovement() const {
@@ -270,11 +298,83 @@ bool Zombie::canSetOffLandmine() const {
     return true;
 }
 
+void Zombie::setMovementPlanDistance(int m) {
+    m_movementPlanDistance = m;
+}
+
+int Zombie::movementPlanDistance() const {
+    return m_movementPlanDistance;
+}
+
+void Zombie::computeVomitCoordinates(int& vx, int& vy) {
+    switch (getDirection()) {
+        case up:
+            vx = getX();
+            vy = getY() + SPRITE_HEIGHT;
+            break;
+        case down:
+            vx = getX();
+            vy = getY() - SPRITE_HEIGHT;
+            break;
+        case left:
+            vx = getX() - SPRITE_WIDTH;
+            vy = getY();
+            break;
+        case right:
+            vx = getX() + SPRITE_WIDTH;
+            vy = getY();
+            break;
+    }
+}
+
+void Zombie::determineDestinationCoordinates(int& destX, int& destY) {
+    switch (getDirection()) {
+        case up:
+            destX = getX();
+            destY = getY() + 1;
+            break;
+        case down:
+            destX = getX();
+            destY = getY() - 1;
+            break;
+        case left:
+            destX = getX() - 1;
+            destY = getY();
+            break;
+        case right:
+            destX = getX() + 1;
+            destY = getY();
+            break;
+    }
+}
+
 // DUMB ZOMBIE
 DumbZombie::DumbZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
 
+void DumbZombie::determineNewMovementPlanDistanceAndDirection() {
+    setMovementPlanDistance(randInt(3, 10));
+    switch (randInt(1, 4)) {
+        case 1:
+            setDirection(up);
+            break;
+        case 2:
+            setDirection(down);
+            break;
+        case 3:
+            setDirection(left);
+            break;
+        case 4:
+            setDirection(right);
+            break;
+    }
+}
+
 // SMART ZOMBIE
 SmartZombie::SmartZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
+
+void SmartZombie::determineNewMovementPlanDistanceAndDirection() {
+    
+}
 
 // WALL
 Wall::Wall(int x, int y, StudentWorld* sw): Actor(IID_WALL, x, y, right, 0, sw) {}
@@ -317,7 +417,9 @@ bool Exit::blocksFlames() const {
 Pit::Pit(int x, int y, StudentWorld* sw): FallIntoObject(IID_PIT, x, y, 0, sw) {}
 
 void Pit::doSomething() {
-    // if person/zombie overlaps it, destroy it as though it were damaged by a flame
+    // TODO: if person/zombie overlaps it, destroy it as though it were damaged by a flame
+    
+    
     return;
 }
 
