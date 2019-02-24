@@ -105,11 +105,11 @@ bool StudentWorld::playerCanMoveTo(int x, int y) const {
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
         if (a->blocksMovement()) {
-            for (int callerX = x; callerX < x + SPRITE_WIDTH; callerX++) {
-                for (int callerY = y; callerY < y + SPRITE_HEIGHT; callerY++) {
+            for (int destX = x; destX < x + SPRITE_WIDTH; destX++) {
+                for (int destY = y; destY < y + SPRITE_HEIGHT; destY++) {
                     for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
                         for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
-                            if (callerX == actorX && callerY == actorY)
+                            if (destX == actorX && destY == actorY)
                                 return false;
                         }
                     }
@@ -126,10 +126,14 @@ bool StudentWorld::agentCanMoveTo(Agent* ag, int destX, int destY) const {
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
         if (ag != a && a->blocksMovement()) {
-            for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
-                for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
-                    if (actorX == destX && actorY == destY)
-                        return false;
+            for (int actorX = a->getX(); actorX < a->getX() + SPRITE_WIDTH; actorX++) {
+                for (int actorY = a->getY(); actorY < a->getY() + SPRITE_HEIGHT; actorY++) {
+                    for (int agentDestX = destX; agentDestX < destX + SPRITE_WIDTH; agentDestX++) {
+                        for (int agentDestY = destY; agentDestY < destY + SPRITE_HEIGHT; agentDestY++) {
+                            if (actorX == agentDestX && actorY == agentDestY)
+                                return false;
+                        }
+                    }
                 }
             }
         }
