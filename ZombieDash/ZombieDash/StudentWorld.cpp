@@ -100,21 +100,27 @@ void StudentWorld::cleanUp() {
     }
 }
 
+bool StudentWorld::canMoveTo(int fromX, int fromY, int toX, int toY) const {
+    for (int x1 = fromX; x1 < fromX + SPRITE_WIDTH; x1++) {
+        for (int y1 = fromY; y1 < fromY + SPRITE_HEIGHT; y1++) {
+            for (int x2 = toX; x2 < toX + SPRITE_WIDTH; x2++) {
+                for (int y2 = toY; y2 < toY + SPRITE_HEIGHT; y2++) {
+                    if (x1 == x2 && y1 == y2)
+                        return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 bool StudentWorld::playerCanMoveTo(int x, int y) const {
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
         if (a->blocksMovement()) {
-            for (int destX = x; destX < x + SPRITE_WIDTH; destX++) {
-                for (int destY = y; destY < y + SPRITE_HEIGHT; destY++) {
-                    for (int actorX = a->getX(); actorX < a->getX()+SPRITE_WIDTH; actorX++) {
-                        for (int actorY = a->getY(); actorY < a->getY()+SPRITE_HEIGHT; actorY++) {
-                            if (destX == actorX && destY == actorY)
-                                return false;
-                        }
-                    }
-                }
-            }
+            if (!canMoveTo(x, y, a->getX(), a->getY()))
+                return false;
         }
         actorsIter++;
     }
@@ -126,16 +132,8 @@ bool StudentWorld::agentCanMoveTo(Agent* ag, int destX, int destY) const {
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
         if (ag != a && a->blocksMovement()) {
-            for (int actorX = a->getX(); actorX < a->getX() + SPRITE_WIDTH; actorX++) {
-                for (int actorY = a->getY(); actorY < a->getY() + SPRITE_HEIGHT; actorY++) {
-                    for (int agentDestX = destX; agentDestX < destX + SPRITE_WIDTH; agentDestX++) {
-                        for (int agentDestY = destY; agentDestY < destY + SPRITE_HEIGHT; agentDestY++) {
-                            if (actorX == agentDestX && actorY == agentDestY)
-                                return false;
-                        }
-                    }
-                }
-            }
+            if (!canMoveTo(destX, destY, a->getX(), a->getY()))
+                return false;
         }
         actorsIter++;
     }
