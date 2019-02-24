@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "StudentWorld.h"
 #include "GameConstants.h"
+#include <cmath>
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 
@@ -10,7 +11,6 @@
 Actor::Actor(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw): GraphObject(imageID, startX, startY, startDir, depth) {
     m_studentWorld = sw;
     m_alive = true;
-    
 }
 
 bool Actor::alive() const {
@@ -365,7 +365,53 @@ void DumbZombie::determineNewMovementPlan() {
 SmartZombie::SmartZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
 
 void SmartZombie::determineNewMovementPlan() {
-    
+    setMovementPlanDistance(randInt(3, 10));
+    Human* nearestHuman = getStudentWorld()->getNearestHuman(getX(), getY());
+    double distance = sqrt(pow(getX() + SPRITE_WIDTH - nearestHuman->getX(), 2) + pow(getY() + SPRITE_HEIGHT - nearestHuman->getY() , 2));
+    if (distance > 80) {
+        switch (randInt(1, 4)) {
+            case 1:
+                setDirection(up);
+                break;
+            case 2:
+                setDirection(down);
+                break;
+            case 3:
+                setDirection(left);
+                break;
+            case 4:
+                setDirection(right);
+                break;
+        }
+    } else {
+        if (getX() == nearestHuman->getX()) {
+            if (getY() < nearestHuman->getY())
+                setDirection(up);
+            else
+                setDirection(down);
+        } else if (getY() == nearestHuman->getY()) {
+            if (getX() < nearestHuman->getX())
+                setDirection(right);
+            else
+                setDirection(left);
+        } else {
+            Direction horizontalOption;
+            Direction verticalOption;
+            if (getX() < nearestHuman->getX())
+                horizontalOption = right;
+            else
+                horizontalOption = left;
+            if (getY() < nearestHuman->getY())
+                verticalOption = up;
+            else
+                verticalOption = down;
+            int d = randInt(1, 2);
+            if (d == 1)
+                setDirection(horizontalOption);
+            else
+                setDirection(verticalOption);
+        }
+    }
 }
 
 // WALL

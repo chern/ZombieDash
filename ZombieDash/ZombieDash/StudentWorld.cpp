@@ -184,6 +184,23 @@ bool StudentWorld::overlapsWithOrganism(int x, int y) const {
     return false;
 }
 
+Human* StudentWorld::getNearestHuman(int x, int y) const {
+    Human* nearestHuman = m_player;
+    double nearestDistance = sqrt(pow(nearestHuman->getX() + SPRITE_WIDTH - x, 2) + pow(nearestHuman->getY() + SPRITE_HEIGHT - y, 2));
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    for (; actorsIter != m_actors.cend(); actorsIter++) {
+        Actor* a = *actorsIter;
+        if (a->canBeInfected()) {
+            double tempDistance = sqrt(pow(a->getX() + SPRITE_WIDTH - x, 2) + pow(a->getY() + SPRITE_HEIGHT - y, 2));
+            if (tempDistance < nearestDistance) {
+                nearestHuman = static_cast<Human*>(a);
+                nearestDistance = tempDistance;
+            }
+        }
+    }
+    return nearestHuman;
+}
+
 int StudentWorld::citizensRemaining() const {
     return m_citizens;
 }

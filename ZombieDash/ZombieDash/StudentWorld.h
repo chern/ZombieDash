@@ -22,6 +22,7 @@ public:
     bool overlapsWithPlayer(int x, int y) const;
     bool overlapsWithCitizen(int x, int y) const;
     bool overlapsWithOrganism(int x, int y) const;
+    Human* getNearestHuman(int x, int y) const;
     int citizensRemaining() const;
     int zombiesRemaining() const;
     void finishLevel();
