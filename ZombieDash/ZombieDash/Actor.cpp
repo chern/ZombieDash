@@ -400,7 +400,24 @@ void DumbZombie::setZombieDead() {
     // 1 in 10 DumbZombies will drop a vaccine goodie
     int chance = randInt(1, 10);
     if (chance == 1) {
-        getStudentWorld()->addVaccineGoodie(getX(), getY());
+        int randomDirection = randInt(1, 4);
+        int vacX = getX();
+        int vacY = getY();
+        switch (randomDirection) {
+            case 1: // up
+                vacY += SPRITE_HEIGHT;
+                break;
+            case 2: // down
+                vacY -= SPRITE_HEIGHT;
+                break;
+            case 3: // left
+                vacX -= SPRITE_WIDTH;
+                break;
+            case 4: // right
+                vacX += SPRITE_WIDTH;
+                break;
+        }
+        getStudentWorld()->addVaccineGoodie(vacX, vacY);
     }
 }
 

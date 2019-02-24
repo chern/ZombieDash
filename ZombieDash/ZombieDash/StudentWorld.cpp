@@ -284,21 +284,29 @@ void StudentWorld::addFlames(int num, int originalX, int originalY, Direction di
 void StudentWorld::addFlamesAround(int x, int y) {
     m_actors.emplace_back(new Flame(x, y, Actor::up, this));
     // north
-    m_actors.emplace_back(new Flame(x, y + SPRITE_HEIGHT, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x, y + SPRITE_HEIGHT))
+        m_actors.emplace_back(new Flame(x, y + SPRITE_HEIGHT, Actor::up, this));
     // northeast
-    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x + SPRITE_WIDTH, y + SPRITE_HEIGHT))
+        m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::up, this));
     // east
-    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x + SPRITE_WIDTH, y))
+        m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y, Actor::up, this));
     // southeast
-    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x + SPRITE_WIDTH, y - SPRITE_HEIGHT))
+        m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::up, this));
     // south
-    m_actors.emplace_back(new Flame(x, y - SPRITE_HEIGHT, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x, y - SPRITE_HEIGHT))
+        m_actors.emplace_back(new Flame(x, y - SPRITE_HEIGHT, Actor::up, this));
     // southwest
-    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x - SPRITE_WIDTH, y - SPRITE_HEIGHT))
+        m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::up, this));
     // west
-    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x - SPRITE_WIDTH, y))
+        m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y, Actor::up, this));
     // northwest
-    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::up, this));
+    if (!overlapsWithFlameBlockingObject(x - SPRITE_WIDTH, y + SPRITE_HEIGHT))
+        m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::up, this));
 }
 
 void StudentWorld::addLandmine(int x, int y) {
@@ -310,11 +318,23 @@ void StudentWorld::addPit(int x, int y) {
 }
 
 void StudentWorld::addVaccineGoodie(int x, int y) {
-    m_actors.emplace_back(new VaccineGoodie(x, y, this));
+    if (!overlapsWithAnyObject(x, y))
+        m_actors.emplace_back(new VaccineGoodie(x, y, this));
 }
 
 void StudentWorld::addVomit(int x, int y, Direction d) {
     m_actors.emplace_back(new Vomit(x, y, d, this));
+}
+
+bool StudentWorld::overlapsWithAnyObject(int x, int y) const {
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    while (actorsIter != m_actors.cend()) {
+        Actor* a = *actorsIter;
+        if (overlapsWith(x, y, a->getX(), a->getY()))
+            return true;
+        actorsIter++;
+    }
+    return false;
 }
 
 // loop through actors, check if any items that block flames are at (x, y)
