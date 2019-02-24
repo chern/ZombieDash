@@ -344,10 +344,8 @@ bool StudentWorld::overlapsWithFlameBlockingObject(int x, int y) const {
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
-        if (a->blocksFlames()) {
-            if (overlapsWith(x, y, a->getX(), a->getY()))
-                return true;
-        }
+        if (a->blocksFlames() && overlapsWith(x, y, a->getX(), a->getY()))
+            return true;
         actorsIter++;
     }
     return false;
