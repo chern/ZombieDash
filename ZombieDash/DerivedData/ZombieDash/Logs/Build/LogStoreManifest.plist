@@ -64,6 +64,64 @@
 			<key>uniqueIdentifier</key>
 			<string>3336F4FA-F17B-4D19-8BF1-9A45EF589642</string>
 		</dict>
+		<key>338243F7-4B1D-47DD-A30F-EE0F4F653D14</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>338243F7-4B1D-47DD-A30F-EE0F4F653D14.xcactivitylog</string>
+			<key>highLevelStatus</key>
+			<string>S</string>
+			<key>schemeIdentifier-containerName</key>
+			<string>ZombieDash project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>ZombieDash</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build ZombieDash</string>
+			<key>timeStartedRecording</key>
+			<real>572734228.57708704</real>
+			<key>timeStoppedRecording</key>
+			<real>572734231.013592</real>
+			<key>title</key>
+			<string>Build ZombieDash</string>
+			<key>uniqueIdentifier</key>
+			<string>338243F7-4B1D-47DD-A30F-EE0F4F653D14</string>
+		</dict>
+		<key>5E8E279B-731F-4049-8EB2-BE4B9DC0D6D0</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>5E8E279B-731F-4049-8EB2-BE4B9DC0D6D0.xcactivitylog</string>
+			<key>highLevelStatus</key>
+			<string>S</string>
+			<key>schemeIdentifier-containerName</key>
+			<string>ZombieDash project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>ZombieDash</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Build ZombieDash</string>
+			<key>timeStartedRecording</key>
+			<real>572729418.81167102</real>
+			<key>timeStoppedRecording</key>
+			<real>572729419.95964801</real>
+			<key>title</key>
+			<string>Build ZombieDash</string>
+			<key>uniqueIdentifier</key>
+			<string>5E8E279B-731F-4049-8EB2-BE4B9DC0D6D0</string>
+		</dict>
 		<key>959304D5-5620-437B-AF69-32D7D16B20B1</key>
 		<dict>
 			<key>className</key>

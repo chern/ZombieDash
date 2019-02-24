@@ -282,23 +282,23 @@ void StudentWorld::addFlames(int num, int originalX, int originalY, Direction di
 }
 
 void StudentWorld::addFlamesAround(int x, int y) {
-    m_actors.emplace_back(new Flame(x, y, Actor::right, this));
+    m_actors.emplace_back(new Flame(x, y, Actor::up, this));
     // north
-    m_actors.emplace_back(new Flame(x, y + SPRITE_HEIGHT, Actor:: right, this));
+    m_actors.emplace_back(new Flame(x, y + SPRITE_HEIGHT, Actor::up, this));
     // northeast
-    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::right, this));
+    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::up, this));
     // east
-    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y, Actor::right, this));
+    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y, Actor::up, this));
     // southeast
-    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::right, this));
+    m_actors.emplace_back(new Flame(x + SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::up, this));
     // south
-    m_actors.emplace_back(new Flame(x, y - SPRITE_HEIGHT, Actor::right, this));
+    m_actors.emplace_back(new Flame(x, y - SPRITE_HEIGHT, Actor::up, this));
     // southwest
-    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::right, this));
+    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y - SPRITE_HEIGHT, Actor::up, this));
     // west
-    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y, Actor::right, this));
+    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y, Actor::up, this));
     // northwest
-    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::right, this));
+    m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::up, this));
 }
 
 void StudentWorld::addLandmine(int x, int y) {

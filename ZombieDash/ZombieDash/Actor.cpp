@@ -92,8 +92,10 @@ int Human::infections() const {
 }
 
 void Human::infect() {
-    if (!m_infected)
+    if (!m_infected) {
         m_infected = true;
+        playInfectedSoundIfApplicable();
+    }
     m_infections++;
 }
 
@@ -104,6 +106,10 @@ bool Human::infected() const {
 void Human::vaccinate() {
     m_infected = false;
     m_infections = 0;
+}
+
+void Human::playInfectedSoundIfApplicable() {
+    return;
 }
 
 // PENELOPE
@@ -261,6 +267,10 @@ void Citizen::setDeadSpecialized(int deadID) {
             getStudentWorld()->playSound(SOUND_CITIZEN_SAVED);
             break;
     }
+}
+
+void Citizen::playInfectedSoundIfApplicable() {
+    getStudentWorld()->playSound(SOUND_CITIZEN_INFECTED);
 }
 
 // ZOMBIE
@@ -479,7 +489,6 @@ void Exit::doSomething() {
     // 2. Determine if exit overlaps with Penelope AND there are no citizens left
     if (getStudentWorld()->overlapsWithPlayer(getX(), getY()) && getStudentWorld()->citizensRemaining() == 0) {
         getStudentWorld()->playSound(SOUND_LEVEL_FINISHED);
-        // getStudentWorld()->playSound(SOUND_CITIZEN_SAVED);
         getStudentWorld()->finishLevel();
     }
 }

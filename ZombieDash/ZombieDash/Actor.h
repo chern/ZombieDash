@@ -55,6 +55,7 @@ protected:
 private:
     bool m_infected;
     int m_infections;
+    virtual void playInfectedSoundIfApplicable();
 };
 
 class Penelope: public Human {
@@ -83,6 +84,7 @@ public:
 private:
     bool m_paralyzed; // used for "paralysis ticks"
     virtual void setDeadSpecialized(int deadID);
+    virtual void playInfectedSoundIfApplicable();
 };
 
 class Zombie: public Agent {
