@@ -19,8 +19,6 @@ GameWorld* createStudentWorld(string assetPath) {
 
 StudentWorld::StudentWorld(string assetPath): GameWorld(assetPath) {
     m_player = nullptr;
-    m_citizens = 0;
-    m_zombies = 0;
     m_levelFinished = false;
 }
 
@@ -29,8 +27,6 @@ StudentWorld::~StudentWorld() {
 }
 
 int StudentWorld::init() {
-    m_citizens = 0;
-    m_zombies = 0;
     m_levelFinished = false;
     
     return loadLevel();
@@ -102,8 +98,6 @@ void StudentWorld::cleanUp() {
         actorsIter = m_actors.erase(actorsIter);
         // cout << "Erasing actor" << endl;
     }
-    m_citizens = 0;
-    m_zombies = 0;
 }
 
 bool StudentWorld::playerCanMoveTo(int x, int y) const {
@@ -202,11 +196,13 @@ Human* StudentWorld::getNearestHuman(int x, int y) const {
 }
 
 int StudentWorld::citizensRemaining() const {
-    return m_citizens;
-}
-
-int StudentWorld::zombiesRemaining() const {
-    return m_zombies;
+    int citizens = 0;
+    for (list<Actor*>::const_iterator actorsIter = m_actors.cbegin(); actorsIter != m_actors.cend(); actorsIter++) {
+        Actor* a = *actorsIter;
+        if (a->canBeInfected())
+            citizens++;
+    }
+    return citizens;
 }
 
 void StudentWorld::finishLevel() {
@@ -375,16 +371,13 @@ int StudentWorld::loadLevel() {
                         break;
                     case Level::citizen:
                         m_actors.emplace_back(new Citizen(gameX, gameY, this));
-                        m_citizens++;
                         cout << "Location (" << fileX << "," << fileY << ") starts with a citizen" << endl;
                         break;
                     case Level::dumb_zombie:
                         m_actors.emplace_back(new DumbZombie(gameX, gameY, this));
-                        m_zombies++;
                         break;
                     case Level::smart_zombie:
                         m_actors.emplace_back(new SmartZombie(gameX, gameY, this));
-                        m_zombies++;
                         break;
                     case Level::pit:
                         m_actors.emplace_back(new Pit(gameX, gameY, this));
