@@ -327,6 +327,8 @@ void StudentWorld::addVomit(int x, int y, Direction d) {
 }
 
 bool StudentWorld::overlapsWithAnyObject(int x, int y) const {
+    if (overlapsWithPlayer(x, y))
+        return true;
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
