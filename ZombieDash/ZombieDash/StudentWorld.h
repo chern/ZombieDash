@@ -35,6 +35,7 @@ public:
     void addFlamesAround(int x, int y);
     void addLandmine(int x, int y);
     void addPit(int x, int y);
+    void addVaccineGoodie(int x, int y);
     void addVomit(int x, int y, Direction d);
 private:
     std::list<Actor*> m_actors;

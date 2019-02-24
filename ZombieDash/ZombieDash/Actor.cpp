@@ -17,8 +17,9 @@ bool Actor::alive() const {
     return m_alive;
 }
 
-void Actor::setDead() {
+void Actor::setDead(int deadID) {
     m_alive = false;
+    setDeadSpecialized(deadID);
 }
 
 StudentWorld* Actor::getStudentWorld() const {
@@ -51,6 +52,10 @@ bool Actor::canSetOffLandmine() const {
 
 bool Actor::canBeDetonated() const {
     return false;
+}
+
+void Actor::setDeadSpecialized(int deadID) {
+    return;
 }
 
 // AGENT
@@ -114,7 +119,7 @@ void Penelope::doSomething() {
     if (infected()) {
         infect();
         if (infections() >= 500) {
-            setDead();
+            setDead(DEAD_KILLED);
             getStudentWorld()->playSound(SOUND_PLAYER_DIE);
             return;
         }
@@ -227,9 +232,8 @@ void Citizen::doSomething() {
     if (infected()) {
         infect();
         if (infections() >= 500) {
-            setDead();
+            setDead(DEAD_KILLED);
             getStudentWorld()->playSound(SOUND_ZOMBIE_BORN);
-            getStudentWorld()->increaseScore(-1000);
             // introduce a new zombie object at the same (x,y) coordinate
                 // 70% chance of DumbZombie
                 // 30% chance of SmartZombie
@@ -244,6 +248,19 @@ void Citizen::doSomething() {
     }
     // TODO: Citizen must determine its distance to Penelope
     // TODO: Citizen must determine its distance to the nearest zombie
+}
+
+void Citizen::setDeadSpecialized(int deadID) {
+    switch (deadID) {
+        case DEAD_KILLED:
+            getStudentWorld()->increaseScore(-1000);
+            getStudentWorld()->playSound(SOUND_CITIZEN_DIE);
+            break;
+        case DEAD_SAVED_USED:
+            getStudentWorld()->increaseScore(500);
+            getStudentWorld()->playSound(SOUND_CITIZEN_SAVED);
+            break;
+    }
 }
 
 // ZOMBIE
@@ -340,6 +357,13 @@ void Zombie::computeDestinationCoordinates(int& destX, int& destY) {
     }
 }
 
+void Zombie::setDeadSpecialized(int deadID) {
+    if (deadID == DEAD_KILLED) {
+        setZombieDead();
+        getStudentWorld()->playSound(SOUND_ZOMBIE_DIE);
+    }
+}
+
 // DUMB ZOMBIE
 DumbZombie::DumbZombie(int startX, int startY, StudentWorld* sw): Zombie(startX, startY, sw) {}
 
@@ -358,6 +382,15 @@ void DumbZombie::determineNewMovementPlan() {
         case 4:
             setDirection(right);
             break;
+    }
+}
+
+void DumbZombie::setZombieDead() {
+    getStudentWorld()->increaseScore(1000);
+    // 1 in 10 DumbZombies will drop a vaccine goodie
+    int chance = randInt(1, 10);
+    if (chance == 1) {
+        getStudentWorld()->addVaccineGoodie(getX(), getY());
     }
 }
 
@@ -414,6 +447,10 @@ void SmartZombie::determineNewMovementPlan() {
     }
 }
 
+void SmartZombie::setZombieDead() {
+    getStudentWorld()->increaseScore(2000);
+}
+
 // WALL
 Wall::Wall(int x, int y, StudentWorld* sw): Actor(IID_WALL, x, y, right, 0, sw) {}
 
@@ -468,15 +505,20 @@ void Goodie::doSomething() {
     if (!alive())
         return;
     if (getStudentWorld()->overlapsWithPlayer(getX(), getY())) {
-        getStudentWorld()->increaseScore(50);
-        this->setDead();
-        getStudentWorld()->playSound(SOUND_GOT_GOODIE);
-        giveSpecializedGoodie();
+        this->setDead(DEAD_SAVED_USED);
     }
 }
 
 bool Goodie::canBeDamaged() const {
     return true;
+}
+
+void Goodie::setDeadSpecialized(int deadID) {
+    if (deadID == DEAD_SAVED_USED) {
+        getStudentWorld()->increaseScore(50);
+        getStudentWorld()->playSound(SOUND_GOT_GOODIE);
+        giveSpecializedGoodie();
+    }
 }
 
 // VACCINE GOODIE
@@ -510,7 +552,7 @@ void Projectile::doSomething() {
     if (!alive())
         return;
     if (m_ticks >= 2) {
-        setDead();
+        setDead(DEAD_SAVED_USED);
         return;
     }
     inflictSpecializedDamage();
@@ -560,7 +602,7 @@ bool Landmine::canBeDetonated() const {
 }
 
 void Landmine::detonate() {
-    setDead();
+    setDead(DEAD_SAVED_USED);
     getStudentWorld()->playSound(SOUND_LANDMINE_EXPLODE);
     getStudentWorld()->addFlamesAround(getX(), getY());
     getStudentWorld()->addPit(getX(), getY());

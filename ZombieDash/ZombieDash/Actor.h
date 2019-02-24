@@ -9,12 +9,15 @@
 
 class StudentWorld;
 
+const int DEAD_KILLED = 1;
+const int DEAD_SAVED_USED = 2;
+
 class Actor: public GraphObject {
 public:
     Actor(int imageID, int startX, int startY, Direction startDir, int depth, StudentWorld* sw);
     virtual void doSomething() = 0;
     bool alive() const;
-    void setDead();
+    void setDead(int deadID);
     StudentWorld* getStudentWorld() const;
     virtual bool blocksMovement() const;
     virtual bool canBeInfected() const; // by vomit
@@ -27,6 +30,7 @@ protected:
 private:
     StudentWorld* m_studentWorld;
     bool m_alive;
+    virtual void setDeadSpecialized(int deadID);
 };
 
 class Agent: public Actor {
@@ -78,6 +82,7 @@ public:
     virtual void doSomething();
 private:
     bool m_paralyzed; // used for "paralysis ticks"
+    virtual void setDeadSpecialized(int deadID);
 };
 
 class Zombie: public Agent {
@@ -93,6 +98,8 @@ private:
     void computeVomitCoordinates(int& vx, int& vy);
     void computeDestinationCoordinates(int& destX, int& destY);
     virtual void determineNewMovementPlan() = 0;
+    virtual void setDeadSpecialized(int deadID);
+    virtual void setZombieDead() = 0;
 };
 
 class DumbZombie: public Zombie {
@@ -100,6 +107,7 @@ public:
     DumbZombie(int startX, int startY, StudentWorld* sw);
 private:
     virtual void determineNewMovementPlan();
+    virtual void setZombieDead();
 };
 
 class SmartZombie: public Zombie {
@@ -107,6 +115,7 @@ public:
     SmartZombie(int startX, int startY, StudentWorld* sw);
 private:
     virtual void determineNewMovementPlan();
+    virtual void setZombieDead();
 };
 
 class Wall: public Actor {
@@ -144,6 +153,7 @@ public:
     virtual void doSomething();
     virtual bool canBeDamaged() const; // by flame
 private:
+    virtual void setDeadSpecialized(int deadID);
     virtual void giveSpecializedGoodie() = 0;
 };
 

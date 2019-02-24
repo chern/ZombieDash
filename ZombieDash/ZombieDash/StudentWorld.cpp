@@ -227,16 +227,16 @@ void StudentWorld::addLandminesToPlayer(int num) {
 
 void StudentWorld::inflictFlameDamageAround(int x, int y) {
     if (overlapsWithPlayer(x, y)) {
-        m_player->setDead();
+        m_player->setDead(DEAD_KILLED);
         playSound(SOUND_PLAYER_DIE);
     }
     list<Actor*>::iterator actorsIter = m_actors.begin();
     while (actorsIter != m_actors.end()) {
         Actor* a = *actorsIter;
         if (a->canBeDamaged() && overlapsWith(x, y, a->getX(), a->getY())) {
-                a->setDead();
-                if (a->canBeDetonated())
-                    static_cast<Landmine*>(a)->detonate();
+            a->setDead(DEAD_KILLED);
+            if (a->canBeDetonated())
+                static_cast<Landmine*>(a)->detonate();
         }
         actorsIter++;
     }
@@ -309,6 +309,10 @@ void StudentWorld::addLandmine(int x, int y) {
 
 void StudentWorld::addPit(int x, int y) {
     m_actors.emplace_back(new Pit(x, y, this));
+}
+
+void StudentWorld::addVaccineGoodie(int x, int y) {
+    m_actors.emplace_back(new VaccineGoodie(x, y, this));
 }
 
 void StudentWorld::addVomit(int x, int y, Direction d) {
