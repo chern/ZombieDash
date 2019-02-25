@@ -217,7 +217,7 @@ void Penelope::deployLandmine() {
     if (m_landmines <= 0)
         return; // do nothing
     m_landmines--;
-    getStudentWorld()->addLandmine(getX(), getY());
+    getStudentWorld()->addActor(new Landmine(getX(), getY(), getStudentWorld()));
 }
 
 void Penelope::useVaccine() {
@@ -243,6 +243,11 @@ void Citizen::doSomething() {
             // introduce a new zombie object at the same (x,y) coordinate
                 // 70% chance of DumbZombie
                 // 30% chance of SmartZombie
+            int zombieChance = randInt(1, 10);
+            if (zombieChance <= 7)
+                getStudentWorld()->addActor(new DumbZombie(getX(), getY(), getStudentWorld()));
+            else
+                getStudentWorld()->addActor(new SmartZombie(getX(), getY(), getStudentWorld()));
             return;
         }
     }
@@ -252,11 +257,20 @@ void Citizen::doSomething() {
     } else {
         m_paralyzed = true;
     }
-    // TODO: Citizen must determine its distance to Penelope
-    // TODO: Citizen must determine its distance to the nearest zombie
+    // Citizen must determine its distance to Penelope
+    double distanceToPlayer = getStudentWorld()->distanceToPlayer(getX(), getY());
+    // Citizen must determine its distance to the nearest zombie
+    Zombie* nearestZombie = getStudentWorld()->getNearestZombie(getX(), getY());
+    double distanceToZombie = -1;
+    if (nearestZombie != nullptr)
+        distanceToZombie = getStudentWorld()->distance(getX(), getY(), nearestZombie->getX(), nearestZombie->getY());
+    if (getStudentWorld()->zombiesRemaining() == 0 || distanceToPlayer < distanceToZombie) { // wants to follow Penelope
+        
+    }
 }
 
 void Citizen::setDeadSpecialized(int deadID) {
+    getStudentWorld()->markCitizenGone();
     switch (deadID) {
         case DEAD_KILLED:
             getStudentWorld()->increaseScore(-1000);
@@ -297,7 +311,7 @@ void Zombie::doSomething() {
     if (getStudentWorld()->overlapsWithPlayer(vomitX, vomitY) || getStudentWorld()->overlapsWithCitizen(vomitX, vomitY)) {
         int chance = randInt(1, 3);
         if (chance > 1) { // 1 in 3 chance of vomit
-            getStudentWorld()->addVomit(vomitX, vomitY, getDirection());
+            getStudentWorld()->addActor(new Vomit(vomitX, vomitY, getDirection(), getStudentWorld()));
             getStudentWorld()->playSound(SOUND_ZOMBIE_VOMIT);
             return;
         }
@@ -368,6 +382,7 @@ void Zombie::computeDestinationCoordinates(int& destX, int& destY) {
 }
 
 void Zombie::setDeadSpecialized(int deadID) {
+    getStudentWorld()->markZombieGone();
     if (deadID == DEAD_KILLED) {
         setZombieDead();
         getStudentWorld()->playSound(SOUND_ZOMBIE_DIE);
@@ -417,7 +432,7 @@ void DumbZombie::setZombieDead() {
                 vacX += SPRITE_WIDTH;
                 break;
         }
-        getStudentWorld()->addVaccineGoodie(vacX, vacY);
+        getStudentWorld()->addActor(new VaccineGoodie(vacX, vacY, getStudentWorld()));
     }
 }
 
@@ -631,5 +646,5 @@ void Landmine::detonate() {
     setDead(DEAD_SAVED_USED);
     getStudentWorld()->playSound(SOUND_LANDMINE_EXPLODE);
     getStudentWorld()->addFlamesAround(getX(), getY());
-    getStudentWorld()->addPit(getX(), getY());
+    getStudentWorld()->addActor(new Pit(getX(), getY(), getStudentWorld()));
 }

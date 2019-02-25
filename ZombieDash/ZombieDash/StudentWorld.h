@@ -17,13 +17,19 @@ public:
     virtual int init();
     virtual int move();
     virtual void cleanUp();
+    static double distance(int x1, int y1, int x2, int y2) ;
     bool playerCanMoveTo(int x, int y) const;
     bool agentCanMoveTo(Agent* ag, int destX, int destY) const;
     bool overlapsWithPlayer(int x, int y) const;
     bool overlapsWithCitizen(int x, int y) const;
     bool overlapsWithOrganism(int x, int y) const;
     Human* getNearestHuman(int x, int y) const;
+    Zombie* getNearestZombie(int x, int y) const;
+    double distanceToPlayer(int x, int y) const;
     int citizensRemaining() const;
+    void markCitizenGone();
+    int zombiesRemaining() const;
+    void markZombieGone();
     void finishLevel();
     void addVaccinesToPlayer(int num);
     void addFlamethrowerChargesToPlayer(int num);
@@ -32,14 +38,13 @@ public:
     void inflictVomitDamageAround(int x, int y);
     void addFlames(int num, int originalX, int originalY, Direction d);
     void addFlamesAround(int x, int y);
-    void addLandmine(int x, int y);
-    void addPit(int x, int y);
-    void addVaccineGoodie(int x, int y);
-    void addVomit(int x, int y, Direction d);
+    void addActor(Actor* a);
 private:
     std::list<Actor*> m_actors;
     Penelope* m_player;
     bool m_levelFinished;
+    int m_citizens;
+    int m_zombies;
     int loadLevel();
     bool canMoveTo(int fromX, int fromY, int toX, int toY) const;
     bool overlapsWith(int x1, int y1, int x2, int y2) const;

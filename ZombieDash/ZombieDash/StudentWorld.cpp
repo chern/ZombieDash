@@ -20,6 +20,8 @@ GameWorld* createStudentWorld(string assetPath) {
 StudentWorld::StudentWorld(string assetPath): GameWorld(assetPath) {
     m_player = nullptr;
     m_levelFinished = false;
+    m_citizens = 0;
+    m_zombies = 0;
 }
 
 StudentWorld::~StudentWorld() {
@@ -28,7 +30,8 @@ StudentWorld::~StudentWorld() {
 
 int StudentWorld::init() {
     m_levelFinished = false;
-    
+    m_citizens = 0;
+    m_zombies = 0;
     return loadLevel();
 }
 
@@ -180,14 +183,20 @@ bool StudentWorld::overlapsWithOrganism(int x, int y) const {
     return false;
 }
 
+double StudentWorld::distance(int x1, int y1, int x2, int y2) {
+    return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+}
+
 Human* StudentWorld::getNearestHuman(int x, int y) const {
     Human* nearestHuman = m_player;
-    double nearestDistance = sqrt(pow(nearestHuman->getX() + SPRITE_WIDTH - x, 2) + pow(nearestHuman->getY() + SPRITE_HEIGHT - y, 2));
+    // double nearestDistance = sqrt(pow(nearestHuman->getX() + SPRITE_WIDTH - x, 2) + pow(nearestHuman->getY() + SPRITE_HEIGHT - y, 2));
+    double nearestDistance = distance(nearestHuman->getX() + SPRITE_WIDTH/2, nearestHuman->getY() + SPRITE_HEIGHT/2, x, y);
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     for (; actorsIter != m_actors.cend(); actorsIter++) {
         Actor* a = *actorsIter;
         if (a->canBeInfected()) {
-            double tempDistance = sqrt(pow(a->getX() + SPRITE_WIDTH - x, 2) + pow(a->getY() + SPRITE_HEIGHT - y, 2));
+            // double tempDistance = sqrt(pow(a->getX() + SPRITE_WIDTH - x, 2) + pow(a->getY() + SPRITE_HEIGHT - y, 2));
+            double tempDistance = distance(a->getX() + SPRITE_WIDTH/2, a->getY() + SPRITE_HEIGHT/2, x, y);
             if (tempDistance < nearestDistance) {
                 nearestHuman = static_cast<Human*>(a);
                 nearestDistance = tempDistance;
@@ -197,14 +206,52 @@ Human* StudentWorld::getNearestHuman(int x, int y) const {
     return nearestHuman;
 }
 
-int StudentWorld::citizensRemaining() const {
-    int citizens = 0;
-    for (list<Actor*>::const_iterator actorsIter = m_actors.cbegin(); actorsIter != m_actors.cend(); actorsIter++) {
+Zombie* StudentWorld::getNearestZombie(int x, int y) const {
+    if (zombiesRemaining() <= 0)
+        return nullptr;
+    
+    Zombie* nearestZombie = nullptr;
+    double nearestDistance = 1000000;
+    list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+    while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
-        if (a->canBeInfected())
-            citizens++;
+        if (!a->canBeInfected() && a->blocksMovement() && a->canBeDamaged() && a->canFall() && a->canSetOffLandmine()) {
+            double tempDistance = distance(a->getX() + SPRITE_WIDTH/2, a->getY() + SPRITE_HEIGHT/2, x, y);
+            if (tempDistance < nearestDistance) {
+                nearestZombie = static_cast<Zombie*>(a);
+                nearestDistance = tempDistance;
+            }
+        }
+        actorsIter++;
     }
-    return citizens;
+    return nearestZombie;
+}
+
+double StudentWorld::distanceToPlayer(int x, int y) const {
+    return sqrt(pow(x - m_player->getX(), 2) + pow(y - m_player->getY(), 2));
+}
+
+int StudentWorld::citizensRemaining() const {
+//    int citizens = 0;
+//    for (list<Actor*>::const_iterator actorsIter = m_actors.cbegin(); actorsIter != m_actors.cend(); actorsIter++) {
+//        Actor* a = *actorsIter;
+//        if (a->canBeInfected())
+//            citizens++;
+//    }
+//    return citizens;
+    return m_citizens;
+}
+
+void StudentWorld::markCitizenGone() {
+    m_citizens--;
+}
+
+int StudentWorld::zombiesRemaining() const {
+    return m_zombies;
+}
+
+void StudentWorld::markZombieGone() {
+    m_zombies--;
 }
 
 void StudentWorld::finishLevel() {
@@ -309,21 +356,8 @@ void StudentWorld::addFlamesAround(int x, int y) {
         m_actors.emplace_back(new Flame(x - SPRITE_WIDTH, y + SPRITE_HEIGHT, Actor::up, this));
 }
 
-void StudentWorld::addLandmine(int x, int y) {
-    m_actors.emplace_back(new Landmine(x, y, this));
-}
-
-void StudentWorld::addPit(int x, int y) {
-    m_actors.emplace_back(new Pit(x, y, this));
-}
-
-void StudentWorld::addVaccineGoodie(int x, int y) {
-    if (!overlapsWithAnyObject(x, y))
-        m_actors.emplace_back(new VaccineGoodie(x, y, this));
-}
-
-void StudentWorld::addVomit(int x, int y, Direction d) {
-    m_actors.emplace_back(new Vomit(x, y, d, this));
+void StudentWorld::addActor(Actor* a) {
+    m_actors.emplace_back(a);
 }
 
 bool StudentWorld::overlapsWithAnyObject(int x, int y) const {
@@ -393,13 +427,16 @@ int StudentWorld::loadLevel() {
                         break;
                     case Level::citizen:
                         m_actors.emplace_back(new Citizen(gameX, gameY, this));
+                        m_citizens++;
                         cout << "Location (" << fileX << "," << fileY << ") starts with a citizen" << endl;
                         break;
                     case Level::dumb_zombie:
                         m_actors.emplace_back(new DumbZombie(gameX, gameY, this));
+                        m_zombies++;
                         break;
                     case Level::smart_zombie:
                         m_actors.emplace_back(new SmartZombie(gameX, gameY, this));
+                        m_zombies++;
                         break;
                     case Level::pit:
                         m_actors.emplace_back(new Pit(gameX, gameY, this));
