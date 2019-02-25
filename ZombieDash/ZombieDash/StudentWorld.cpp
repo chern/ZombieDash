@@ -187,6 +187,14 @@ double StudentWorld::distance(int x1, int y1, int x2, int y2) {
     return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 }
 
+int StudentWorld::getPlayerX() const {
+    return m_player->getX();
+}
+
+int StudentWorld::getPlayerY() const {
+    return m_player->getY();
+}
+
 Human* StudentWorld::getNearestHuman(int x, int y) const {
     Human* nearestHuman = m_player;
     // double nearestDistance = sqrt(pow(nearestHuman->getX() + SPRITE_WIDTH - x, 2) + pow(nearestHuman->getY() + SPRITE_HEIGHT - y, 2));

@@ -40,7 +40,10 @@ public:
     virtual bool canBeDamaged() const; // by flame
     virtual bool canFall() const;
     virtual bool canSetOffLandmine() const;
+protected:
+    bool attemptToMoveTo(int x, int y, Direction d);
 private:
+    virtual void computeDestinationCoordinates(int& destX, int& destY, Direction d) = 0;
 };
 
 class Human: public Agent {
@@ -75,6 +78,7 @@ private:
     void deployFlames();
     void deployLandmine();
     void useVaccine();
+    virtual void computeDestinationCoordinates(int& destX, int& destY, Direction d);
 };
 
 class Citizen: public Human {
@@ -85,6 +89,9 @@ private:
     bool m_paralyzed; // used for "paralysis ticks"
     virtual void setDeadSpecialized(int deadID);
     virtual void playInfectedSoundIfApplicable();
+    virtual void computeDestinationCoordinates(int& destX, int& destY, Direction d);
+    void attemptToFollowPlayer();
+    void attemptToFleeFromZombie();
 };
 
 class Zombie: public Agent {
@@ -98,7 +105,7 @@ private:
     bool m_paralyzed;
     int m_movementPlanDistance;
     void computeVomitCoordinates(int& vx, int& vy);
-    void computeDestinationCoordinates(int& destX, int& destY);
+    virtual void computeDestinationCoordinates(int& destX, int& destY, Direction d);
     virtual void determineNewMovementPlan() = 0;
     virtual void setDeadSpecialized(int deadID);
     virtual void setZombieDead() = 0;

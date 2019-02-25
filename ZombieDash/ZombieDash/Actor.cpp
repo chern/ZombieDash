@@ -4,6 +4,7 @@
 #include "StudentWorld.h"
 #include "GameConstants.h"
 #include <cmath>
+#include <map>
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 
@@ -77,6 +78,15 @@ bool Agent::canSetOffLandmine() const {
     return true;
 }
 
+bool Agent::attemptToMoveTo(int x, int y, Direction d) {
+    if (getStudentWorld()->agentCanMoveTo(this, x, y)) {
+        setDirection(d);
+        moveTo(x, y);
+        return true;
+    }
+    return false;
+}
+
 // HUMAN
 Human::Human(int imageID, int startX, int startY, StudentWorld* sw): Agent(imageID, startX, startY, sw) {
     m_infected = false;
@@ -134,30 +144,29 @@ void Penelope::doSomething() {
     int ch;
     if (getStudentWorld()->getKey(ch)) {
         // The user hit a key during this tick
+        int destX = getX();
+        int destY = getY();
+        bool directionalKeyPressed = false;
         switch (ch) {
             case KEY_PRESS_LEFT:
                 // move Penelope to the left
                 setDirection(left);
-                if (getStudentWorld()->playerCanMoveTo(getX()-4, getY()))
-                    moveTo(getX()-4, getY());
+                directionalKeyPressed = true;
                 break;
             case KEY_PRESS_RIGHT:
                 // move Penelope to the right
                 setDirection(right);
-                if (getStudentWorld()->playerCanMoveTo(getX()+4, getY()))
-                    moveTo(getX()+4, getY());
+                directionalKeyPressed = true;
                 break;
             case KEY_PRESS_UP:
                 // move Penelope up
                 setDirection(up);
-                if (getStudentWorld()->playerCanMoveTo(getX(), getY()+4))
-                    moveTo(getX(), getY()+4);
+                directionalKeyPressed = true;
                 break;
             case KEY_PRESS_DOWN:
                 // move Penelope down
                 setDirection(down);
-                if (getStudentWorld()->playerCanMoveTo(getX(), getY()-4))
-                    moveTo(getX(), getY()-4);
+                directionalKeyPressed = true;
                 break;
             case KEY_PRESS_SPACE:
                 // add flames in front of Penelope
@@ -177,6 +186,11 @@ void Penelope::doSomething() {
                     useVaccine();
                 }
                 break;
+        }
+        if (directionalKeyPressed) {
+            computeDestinationCoordinates(destX, destY, getDirection());
+            if (getStudentWorld()->playerCanMoveTo(destX, destY))
+                moveTo(destX, destY);
         }
     }
 }
@@ -227,6 +241,25 @@ void Penelope::useVaccine() {
     vaccinate();
 }
 
+void Penelope::computeDestinationCoordinates(int& destX, int& destY, Direction d) {
+    destX = getX();
+    destY = getY();
+    switch (d) {
+        case up:
+            destY = getY() + 4;
+            break;
+        case down:
+            destY = getY() - 4;
+            break;
+        case left:
+            destX = getX() - 4;
+            break;
+        case right:
+            destX = getX() + 4;
+            break;
+    }
+}
+
 // CITIZEN
 Citizen::Citizen(int startX, int startY, StudentWorld* sw): Human(IID_CITIZEN, startX, startY, sw) {
     m_paralyzed = false;
@@ -261,11 +294,13 @@ void Citizen::doSomething() {
     double distanceToPlayer = getStudentWorld()->distanceToPlayer(getX(), getY());
     // Citizen must determine its distance to the nearest zombie
     Zombie* nearestZombie = getStudentWorld()->getNearestZombie(getX(), getY());
-    double distanceToZombie = -1;
+    double distanceToNearestZombie = -1;
     if (nearestZombie != nullptr)
-        distanceToZombie = getStudentWorld()->distance(getX(), getY(), nearestZombie->getX(), nearestZombie->getY());
-    if (getStudentWorld()->zombiesRemaining() == 0 || distanceToPlayer < distanceToZombie) { // wants to follow Penelope
-        
+        distanceToNearestZombie = getStudentWorld()->distance(getX(), getY(), nearestZombie->getX(), nearestZombie->getY());
+    if ((getStudentWorld()->zombiesRemaining() == 0 || distanceToPlayer < distanceToNearestZombie) && distanceToPlayer <= 80) { // wants to follow Penelope
+        attemptToFollowPlayer();
+    } else if (getStudentWorld()->zombiesRemaining() != 0 && nearestZombie != nullptr && distanceToNearestZombie <= 80) { // wants to run away from Zombie
+        attemptToFleeFromZombie();
     }
 }
 
@@ -285,6 +320,160 @@ void Citizen::setDeadSpecialized(int deadID) {
 
 void Citizen::playInfectedSoundIfApplicable() {
     getStudentWorld()->playSound(SOUND_CITIZEN_INFECTED);
+}
+
+void Citizen::computeDestinationCoordinates(int& destX, int& destY, Direction d) {
+    destX = getX();
+    destY = getY();
+    switch (d) {
+        case up:
+            destY = getY() + 2;
+            break;
+        case down:
+            destY = getY() - 2;
+            break;
+        case left:
+            destX = getX() - 2;
+            break;
+        case right:
+            destX = getX() + 2;
+            break;
+    }
+}
+
+void Citizen::attemptToFollowPlayer() {
+    int destX = getX();
+    int destY = getY();
+    if (getX() == getStudentWorld()->getPlayerX() || getY() == getStudentWorld()->getPlayerY()) {
+        Direction destDir = getDirection();
+        if (getX() == getStudentWorld()->getPlayerX()) {
+            if (getY() < getStudentWorld()->getPlayerY()) {
+                destDir = up;
+            } else {
+                destDir = down;
+            }
+            computeDestinationCoordinates(destX, destY, destDir);
+        } else {
+            if (getX() < getStudentWorld()->getPlayerX()) {
+                destDir = right;
+            } else {
+                destDir = left;
+            }
+            computeDestinationCoordinates(destX, destY, destDir);
+        }
+        if (attemptToMoveTo(destX, destY, destDir))
+            return;
+    } else {
+        Direction horizontalOption;
+        Direction verticalOption;
+        if (getX() < getStudentWorld()->getPlayerX())
+            horizontalOption = right;
+        else
+            horizontalOption = left;
+        
+        if (getY() < getStudentWorld()->getPlayerY())
+            verticalOption = up;
+        else
+            verticalOption = down;
+        
+        int randomDirection = randInt(1, 2);
+        Direction chosenDirection;
+        Direction otherDirection;
+        if (randomDirection == 1) {
+            chosenDirection = horizontalOption;
+            otherDirection = verticalOption;
+        } else {
+            chosenDirection = verticalOption;
+            otherDirection = horizontalOption;
+        }
+        computeDestinationCoordinates(destX, destY, chosenDirection);
+        if (attemptToMoveTo(destX, destY, chosenDirection))
+            return;
+        else {
+            computeDestinationCoordinates(destX, destY, otherDirection);
+            if(attemptToMoveTo(destX, destY, otherDirection))
+                return;
+        }
+    }
+}
+
+void Citizen::attemptToFleeFromZombie() {
+    Zombie* currentNearestZombie = getStudentWorld()->getNearestZombie(getX(), getY());
+    double distanceToCurrentNearestZombie = -1;
+    if (currentNearestZombie != nullptr)
+        distanceToCurrentNearestZombie = getStudentWorld()->distance(getX(), getY(), currentNearestZombie->getX(), currentNearestZombie->getY());
+    
+    std::map<int, double> potentialDirections;
+    potentialDirections[90] = 0;
+    potentialDirections[270] = 0;
+    potentialDirections[180] = 0;
+    potentialDirections[0] = 0;
+    bool canGetFurtherAwayFromZombies = false;
+    std::map<Direction, double>::iterator potentDirIt = potentialDirections.begin();
+    while (potentDirIt != potentialDirections.end()) {
+        int destX = getX();
+        int destY = getY();
+        Direction dir = right;
+        switch (potentDirIt->first) {
+            case 90:
+                dir = up;
+                break;
+            case 270:
+                dir = down;
+                break;
+            case 180:
+                dir = left;
+                break;
+            case 0:
+                dir = right;
+                break;
+        }
+        computeDestinationCoordinates(destX, destY, dir);
+        if (getStudentWorld()->agentCanMoveTo(this, destX, destY)) {
+            Zombie* nearestZombie = getStudentWorld()->getNearestZombie(destX, destY);
+            if (nearestZombie != nullptr) {
+                double dist = getStudentWorld()->distance(destX, destY, nearestZombie->getX(), nearestZombie->getY());
+                potentDirIt->second = dist;
+                if (dist > distanceToCurrentNearestZombie) {
+                    canGetFurtherAwayFromZombies = true;
+                }
+            }
+            potentDirIt++;
+        } else {
+            potentDirIt = potentialDirections.erase(potentDirIt);
+        }
+    }
+    
+    if (canGetFurtherAwayFromZombies) {
+        Direction chosenDirection = getDirection();
+        double furthest = distanceToCurrentNearestZombie;
+        potentDirIt = potentialDirections.begin();
+        while (potentDirIt != potentialDirections.end()) {
+            if (potentDirIt->second > furthest) {
+                furthest = potentDirIt->second;
+                switch (potentDirIt->first) {
+                    case 90:
+                        chosenDirection = up;
+                        break;
+                    case 270:
+                        chosenDirection = down;
+                        break;
+                    case 180:
+                        chosenDirection = left;
+                        break;
+                    case 0:
+                        chosenDirection = right;
+                        break;
+                }
+            }
+            potentDirIt++;
+        }
+        setDirection(chosenDirection);
+        int destX = getX();
+        int destY = getY();
+        computeDestinationCoordinates(destX, destY, chosenDirection);
+        moveTo(destX, destY);
+    }
 }
 
 // ZOMBIE
@@ -322,7 +511,7 @@ void Zombie::doSomething() {
     
     int destX = getX();
     int destY = getY();
-    computeDestinationCoordinates(destX, destY);
+    computeDestinationCoordinates(destX, destY, getDirection());
     if (getStudentWorld()->agentCanMoveTo(this, destX, destY)) {
         moveTo(destX, destY);
         m_movementPlanDistance--;
@@ -360,23 +549,21 @@ void Zombie::computeVomitCoordinates(int& vx, int& vy) {
     }
 }
 
-void Zombie::computeDestinationCoordinates(int& destX, int& destY) {
-    switch (getDirection()) {
+void Zombie::computeDestinationCoordinates(int& destX, int& destY, Direction d) {
+    destX = getX();
+    destY = getY();
+    switch (d) {
         case up:
-            destX = getX();
             destY = getY() + 1;
             break;
         case down:
-            destX = getX();
             destY = getY() - 1;
             break;
         case left:
             destX = getX() - 1;
-            destY = getY();
             break;
         case right:
             destX = getX() + 1;
-            destY = getY();
             break;
     }
 }
