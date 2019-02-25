@@ -703,10 +703,15 @@ Exit::Exit(int x, int y, StudentWorld* sw): FallIntoObject(IID_EXIT, x, y, 1, sw
 
 void Exit::doSomething() {
     // TODO: 1. Determine if exit overlaps with a citizen
-    
+    if (getStudentWorld()->overlapsWithCitizen(getX(), getY())) {
+        Citizen* nearestCitizen = getStudentWorld()->getNearestCitizen(getX(), getY());
+        if (nearestCitizen != nullptr) {
+            nearestCitizen->setDead(DEAD_SAVED_USED);
+        }
+    }
     
     // 2. Determine if exit overlaps with Penelope AND there are no citizens left
-    if (getStudentWorld()->overlapsWithPlayer(getX(), getY()) && getStudentWorld()->citizensRemaining() == 0) {
+    if (getStudentWorld()->citizensRemaining() == 0 && getStudentWorld()->overlapsWithPlayer(getX(), getY())) {
         getStudentWorld()->playSound(SOUND_LEVEL_FINISHED);
         getStudentWorld()->finishLevel();
     }

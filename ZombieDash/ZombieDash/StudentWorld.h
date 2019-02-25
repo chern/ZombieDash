@@ -24,6 +24,7 @@ public:
     bool overlapsWithCitizen(int x, int y) const;
     bool overlapsWithOrganism(int x, int y) const;
     Human* getNearestHuman(int x, int y) const;
+    Citizen* getNearestCitizen(int x, int y) const;
     Zombie* getNearestZombie(int x, int y) const;
     double distanceToPlayer(int x, int y) const;
     int getPlayerX() const;

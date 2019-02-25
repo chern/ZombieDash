@@ -131,6 +131,8 @@ bool StudentWorld::playerCanMoveTo(int x, int y) const {
 }
 
 bool StudentWorld::agentCanMoveTo(Agent* ag, int destX, int destY) const {
+    if (!canMoveTo(destX, destY, m_player->getX(), m_player->getY()))
+        return false;
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     while (actorsIter != m_actors.cend()) {
         Actor* a = *actorsIter;
@@ -212,6 +214,27 @@ Human* StudentWorld::getNearestHuman(int x, int y) const {
         }
     }
     return nearestHuman;
+}
+
+Citizen* StudentWorld::getNearestCitizen(int x, int y) const {
+    if (citizensRemaining() <= 0)
+        return nullptr;
+    else {
+        Citizen* nearestCitizen = nullptr;
+        double nearestDistance = 100000;
+        list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
+        for (; actorsIter != m_actors.cend(); actorsIter++) {
+            Actor* a = *actorsIter;
+            if (a->canBeInfected()) {
+                double tempDistance = distance(a->getX() + SPRITE_WIDTH/2, a->getY() + SPRITE_HEIGHT/2, x, y);
+                if (tempDistance < nearestDistance) {
+                    nearestCitizen = static_cast<Citizen*>(a);
+                    nearestDistance = tempDistance;
+                }
+            }
+        }
+        return nearestCitizen;
+    }
 }
 
 Zombie* StudentWorld::getNearestZombie(int x, int y) const {
