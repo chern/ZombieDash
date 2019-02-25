@@ -293,13 +293,10 @@ void Citizen::doSomething() {
     // Citizen must determine its distance to Penelope
     double distanceToPlayer = getStudentWorld()->distanceToPlayer(getX(), getY());
     // Citizen must determine its distance to the nearest zombie
-    Zombie* nearestZombie = getStudentWorld()->getNearestZombie(getX(), getY());
-    double distanceToNearestZombie = -1;
-    if (nearestZombie != nullptr)
-        distanceToNearestZombie = getStudentWorld()->distance(getX(), getY(), nearestZombie->getX(), nearestZombie->getY());
-    if ((getStudentWorld()->zombiesRemaining() == 0 || distanceToPlayer < distanceToNearestZombie) && distanceToPlayer <= 80) { // wants to follow Penelope
+    double distanceToNearestZombie = getStudentWorld()->distanceToNearestZombie(getX(), getY()); // will be -1 if there are no zombies
+    if ((getStudentWorld()->zombiesRemaining() == 0 || distanceToNearestZombie == -1 || distanceToPlayer < distanceToNearestZombie) && distanceToPlayer <= 80) { // wants to follow Penelope
         attemptToFollowPlayer();
-    } else if (getStudentWorld()->zombiesRemaining() != 0 && nearestZombie != nullptr && distanceToNearestZombie <= 80) { // wants to run away from Zombie
+    } else if (getStudentWorld()->zombiesRemaining() != 0 && distanceToNearestZombie != -1 && distanceToNearestZombie <= 80) { // wants to run away from Zombie
         attemptToFleeFromZombie();
     }
 }
@@ -398,10 +395,7 @@ void Citizen::attemptToFollowPlayer() {
 }
 
 void Citizen::attemptToFleeFromZombie() {
-    Zombie* currentNearestZombie = getStudentWorld()->getNearestZombie(getX(), getY());
-    double distanceToCurrentNearestZombie = -1;
-    if (currentNearestZombie != nullptr)
-        distanceToCurrentNearestZombie = getStudentWorld()->distance(getX(), getY(), currentNearestZombie->getX(), currentNearestZombie->getY());
+    double distanceToCurrentNearestZombie = getStudentWorld()->distanceToNearestZombie(getX(), getY()); // will be -1 if no zombies
     
     std::map<int, double> potentialDirections;
     potentialDirections[90] = 0;

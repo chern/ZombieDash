@@ -262,14 +262,17 @@ double StudentWorld::distanceToPlayer(int x, int y) const {
     return sqrt(pow(x - m_player->getX(), 2) + pow(y - m_player->getY(), 2));
 }
 
+double StudentWorld::distanceToNearestZombie(int x, int y) const {
+    if (zombiesRemaining() <= 0)
+        return -1;
+    Zombie* nearestZombie = getNearestZombie(x, y);
+    if (nearestZombie != nullptr)
+        return distance(x, y, nearestZombie->getX(), getPlayerY());
+    else
+        return -1;
+}
+
 int StudentWorld::citizensRemaining() const {
-//    int citizens = 0;
-//    for (list<Actor*>::const_iterator actorsIter = m_actors.cbegin(); actorsIter != m_actors.cend(); actorsIter++) {
-//        Actor* a = *actorsIter;
-//        if (a->canBeInfected())
-//            citizens++;
-//    }
-//    return citizens;
     return m_citizens;
 }
 

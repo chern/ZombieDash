@@ -27,6 +27,7 @@ public:
     Citizen* getNearestCitizen(int x, int y) const;
     Zombie* getNearestZombie(int x, int y) const;
     double distanceToPlayer(int x, int y) const;
+    double distanceToNearestZombie(int x, int y) const;
     int getPlayerX() const;
     int getPlayerY() const;
     int citizensRemaining() const;
