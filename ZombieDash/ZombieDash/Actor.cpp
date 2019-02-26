@@ -424,9 +424,8 @@ void Citizen::attemptToFleeFromZombie() {
         }
         computeDestinationCoordinates(destX, destY, dir);
         if (getStudentWorld()->agentCanMoveTo(this, destX, destY)) {
-            Zombie* nearestZombie = getStudentWorld()->getNearestZombie(destX, destY);
-            if (nearestZombie != nullptr) {
-                double dist = getStudentWorld()->distance(destX, destY, nearestZombie->getX(), nearestZombie->getY());
+            double dist = getStudentWorld()->distanceToNearestZombie(destX, destY);
+            if (dist != -1) {
                 potentDirIt->second = dist;
                 if (dist > distanceToCurrentNearestZombie) {
                     canGetFurtherAwayFromZombies = true;
