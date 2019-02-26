@@ -398,10 +398,10 @@ void Citizen::attemptToFleeFromZombie() {
     double distanceToCurrentNearestZombie = getStudentWorld()->distanceToNearestZombie(getX(), getY()); // will be -1 if no zombies
     
     std::map<int, double> potentialDirections;
-    potentialDirections[90] = 0;
-    potentialDirections[270] = 0;
-    potentialDirections[180] = 0;
-    potentialDirections[0] = 0;
+    potentialDirections[90] = -1;
+    potentialDirections[270] = -1;
+    potentialDirections[180] = -1;
+    potentialDirections[0] = -1;
     bool canGetFurtherAwayFromZombies = false;
     std::map<Direction, double>::iterator potentDirIt = potentialDirections.begin();
     while (potentDirIt != potentialDirections.end()) {
@@ -432,10 +432,8 @@ void Citizen::attemptToFleeFromZombie() {
                     canGetFurtherAwayFromZombies = true;
                 }
             }
-            potentDirIt++;
-        } else {
-            potentDirIt = potentialDirections.erase(potentDirIt);
         }
+        potentDirIt++;
     }
     
     if (canGetFurtherAwayFromZombies) {
@@ -443,7 +441,7 @@ void Citizen::attemptToFleeFromZombie() {
         double furthest = distanceToCurrentNearestZombie;
         potentDirIt = potentialDirections.begin();
         while (potentDirIt != potentialDirections.end()) {
-            if (potentDirIt->second > furthest) {
+            if (potentDirIt->second != -1 && potentDirIt->second > furthest) {
                 furthest = potentDirIt->second;
                 switch (potentDirIt->first) {
                     case 90:

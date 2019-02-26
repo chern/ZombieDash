@@ -259,7 +259,7 @@ Zombie* StudentWorld::getNearestZombie(int x, int y) const {
 }
 
 double StudentWorld::distanceToPlayer(int x, int y) const {
-    return sqrt(pow(x - m_player->getX(), 2) + pow(y - m_player->getY(), 2));
+    return distance(x + SPRITE_WIDTH/2, y + SPRITE_HEIGHT/2, getPlayerX() + SPRITE_WIDTH/2, getPlayerY() + SPRITE_HEIGHT/2);
 }
 
 double StudentWorld::distanceToNearestZombie(int x, int y) const {
@@ -267,7 +267,7 @@ double StudentWorld::distanceToNearestZombie(int x, int y) const {
         return -1;
     Zombie* nearestZombie = getNearestZombie(x, y);
     if (nearestZombie != nullptr)
-        return distance(x, y, nearestZombie->getX(), getPlayerY());
+        return distance(x + SPRITE_WIDTH/2, y + SPRITE_HEIGHT/2, nearestZombie->getX() + SPRITE_WIDTH/2, nearestZombie->getY() + SPRITE_HEIGHT/2);
     else
         return -1;
 }
