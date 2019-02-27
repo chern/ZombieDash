@@ -26,7 +26,6 @@ public:
     virtual bool canFall() const;
     virtual bool canSetOffLandmine() const;
     virtual bool canBeDetonated() const;
-protected:
 private:
     StudentWorld* m_studentWorld;
     bool m_alive;
@@ -133,13 +132,11 @@ public:
     virtual void doSomething();
     virtual bool blocksMovement() const;
     virtual bool blocksFlames() const;
-private:
 };
 
 class FallIntoObject: public Actor {
 public:
     FallIntoObject(int imageID, int x, int y, int depth, StudentWorld* sw);
-private:
 };
 
 class Exit: public FallIntoObject {
@@ -147,7 +144,6 @@ public:
     Exit(int x, int y, StudentWorld* sw);
     virtual void doSomething();
     virtual bool blocksFlames() const;
-private:
 };
 
 class Pit: public FallIntoObject {
