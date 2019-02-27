@@ -49,7 +49,7 @@ private:
     bool m_levelFinished;
     int m_citizens;
     int m_zombies;
-    int loadLevel();
+    int loadLevel(int levelNum);
     bool canMoveTo(int fromX, int fromY, int toX, int toY) const;
     bool overlapsWith(int x1, int y1, int x2, int y2) const;
     bool overlapsWithAnyObject(int x, int y) const;
