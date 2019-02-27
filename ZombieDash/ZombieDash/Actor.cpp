@@ -812,7 +812,7 @@ void Landmine::doSomething() {
         return;
     }
     // must determine if landmine overlaps with a citizen, Penelope, or zombie
-    if (getStudentWorld()->overlapsWithOrganism(getX(), getY())) {
+    if (getStudentWorld()->overlapsWithAgent(getX(), getY())) {
         detonate();
     }
 }

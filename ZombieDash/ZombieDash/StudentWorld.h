@@ -17,12 +17,12 @@ public:
     virtual int init();
     virtual int move();
     virtual void cleanUp();
-    static double distance(int x1, int y1, int x2, int y2) ;
+    static double distance(int x1, int y1, int x2, int y2);
     bool playerCanMoveTo(int x, int y) const;
     bool agentCanMoveTo(Agent* ag, int destX, int destY) const;
     bool overlapsWithPlayer(int x, int y) const;
     bool overlapsWithCitizen(int x, int y) const;
-    bool overlapsWithOrganism(int x, int y) const;
+    bool overlapsWithAgent(int x, int y) const;
     Human* getNearestHuman(int x, int y) const;
     Citizen* getNearestCitizen(int x, int y) const;
     Zombie* getNearestZombie(int x, int y) const;

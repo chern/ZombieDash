@@ -174,13 +174,13 @@ bool StudentWorld::overlapsWithCitizen(int x, int y) const {
     return false;
 }
 
-bool StudentWorld::overlapsWithOrganism(int x, int y) const {
+bool StudentWorld::overlapsWithAgent(int x, int y) const {
     list<Actor*>::const_iterator actorsIter = m_actors.cbegin();
     for (; actorsIter != m_actors.cend(); actorsIter++) {
         Actor* a = *actorsIter;
         if (a->canSetOffLandmine() && overlapsWith(x, y, a->getX(), a->getY()))
             return true;
-        // only organisms (citizens, Penelope, zombies) can set off landmines
+        // only Agents (citizens, Penelope, zombies) can set off landmines
     }
     return false;
 }
