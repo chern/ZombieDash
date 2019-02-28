@@ -77,6 +77,7 @@ private:
     void deployFlames();
     void deployLandmine();
     void useVaccine();
+    virtual void setDeadSpecialized(int deadID);
     virtual void computeDestinationCoordinates(int& destX, int& destY, Direction d);
 };
 

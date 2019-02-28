@@ -138,7 +138,6 @@ void Penelope::doSomething() {
         infect();
         if (infections() >= 500) {
             setDead(DEAD_KILLED);
-            getStudentWorld()->playSound(SOUND_PLAYER_DIE);
             return;
         }
     }
@@ -241,6 +240,11 @@ void Penelope::useVaccine() {
         return; // do nothing
     m_vaccines--;
     vaccinate();
+}
+
+void Penelope::setDeadSpecialized(int deadID) {
+    if (deadID == DEAD_KILLED)
+        getStudentWorld()->playSound(SOUND_PLAYER_DIE);
 }
 
 void Penelope::computeDestinationCoordinates(int& destX, int& destY, Direction d) {
