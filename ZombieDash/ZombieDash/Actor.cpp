@@ -56,6 +56,8 @@ bool Actor::canBeDetonated() const {
 }
 
 void Actor::setDeadSpecialized(int deadID) {
+    if (deadID == DEAD_KILLED || deadID == DEAD_SAVED_USED)
+        return;
     return;
 }
 
