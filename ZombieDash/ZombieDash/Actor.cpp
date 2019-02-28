@@ -693,7 +693,7 @@ FallIntoObject::FallIntoObject(int imageID, int x, int y, int depth, StudentWorl
 Exit::Exit(int x, int y, StudentWorld* sw): FallIntoObject(IID_EXIT, x, y, 1, sw) {}
 
 void Exit::doSomething() {
-    // TODO: 1. Determine if exit overlaps with a citizen
+    // 1. Determine if exit overlaps with a citizen
     if (getStudentWorld()->overlapsWithCitizen(getX(), getY())) {
         Citizen* nearestCitizen = getStudentWorld()->getNearestCitizen(getX(), getY());
         if (nearestCitizen != nullptr) {
@@ -716,8 +716,11 @@ bool Exit::blocksFlames() const {
 Pit::Pit(int x, int y, StudentWorld* sw): FallIntoObject(IID_PIT, x, y, 0, sw) {}
 
 void Pit::doSomething() {
-    // TODO: if person/zombie overlaps it, destroy it as though it were damaged by a flame
-    
+    // If an Agent overlaps it, destroy it as though it were damaged by a flame
+    if (getStudentWorld()->overlapsWithAgent(getX(), getY())) {
+        Agent* ag = getStudentWorld()->getNearestAgent(getX(), getY());
+        ag->setDead(DEAD_KILLED);
+    }
     
     return;
 }

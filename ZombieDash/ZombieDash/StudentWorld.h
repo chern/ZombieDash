@@ -23,6 +23,7 @@ public:
     bool overlapsWithPlayer(int x, int y) const;
     bool overlapsWithCitizen(int x, int y) const;
     bool overlapsWithAgent(int x, int y) const;
+    Agent* getNearestAgent(int x, int y) const;
     Human* getNearestHuman(int x, int y) const;
     Citizen* getNearestCitizen(int x, int y) const;
     Zombie* getNearestZombie(int x, int y) const;
